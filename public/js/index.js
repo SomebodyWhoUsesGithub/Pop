@@ -8,8 +8,9 @@ canvas.height = innerHeight
 
 const x = canvas.width / 2
 const y = canvas.height / 2
-
-const player = new Player(x, y, 10, 'white')
+const image = new Image()
+image.src = "./img/2303TS.png"
+const player = new Player(x, y, 10, 'gold')
 const projectiles = []
 const enemies = []
 const particles = []
@@ -17,29 +18,31 @@ const particles = []
 function spawnEnemies() {
   setInterval(() => {
     const radius = Math.random() * (30 - 4) + 4
-
     let x
     let y
+    let multiplier = 1 + (score / 25000)
+    for (var i = 0; i < Math.floor(multiplier); i++) {
+      if (Math.random() < 0.5) {
+        x = Math.random() < 0.5 ? 0 - radius : canvas.width + radius
+        y = Math.random() * canvas.height
+      } else {
+        x = Math.random() * canvas.width
+        y = Math.random() < 0.5 ? 0 - radius : canvas.height + radius
+      }
 
-    if (Math.random() < 0.5) {
-      x = Math.random() < 0.5 ? 0 - radius : canvas.width + radius
-      y = Math.random() * canvas.height
-    } else {
-      x = Math.random() * canvas.width
-      y = Math.random() < 0.5 ? 0 - radius : canvas.height + radius
+      const color = `hsl(${Math.random() * 360}, 50%, 50%)`
+
+      const angle = Math.atan2(canvas.height / 2 - y, canvas.width / 2 - x)
+
+      const velocity = {
+        x: (Math.cos(angle) * (1 + multiplier / 5)),
+        y: (Math.sin(angle) * (1 + multiplier / 5))
+      }
+
+      enemies.push(new Enemy(x, y, radius, color, velocity))
+      console.log(i,multiplier)
     }
-
-    const color = `hsl(${Math.random() * 360}, 50%, 50%)`
-
-    const angle = Math.atan2(canvas.height / 2 - y, canvas.width / 2 - x)
-
-    const velocity = {
-      x: Math.cos(angle),
-      y: Math.sin(angle)
-    }
-
-    enemies.push(new Enemy(x, y, radius, color, velocity))
-  }, 1000)
+  }, 2000)
 }
 
 let animationId
@@ -49,7 +52,7 @@ function animate() {
   c.fillStyle = 'rgba(0, 0, 0, 0.1)'
   c.fillRect(0, 0, canvas.width, canvas.height)
 
-  player.draw()
+  player.draw(image)
 
   for (let index = particles.length - 1; index >= 0; index--) {
     const particle = particles[index]
