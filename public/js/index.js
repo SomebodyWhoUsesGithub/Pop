@@ -47,7 +47,7 @@ socket.on('updatePlayers', (playersList) => {
             players[id].y += input.vy
           });
         }
-      }else{
+      }else if(id !== socket.id){
         gsap.to(players[id],{
           x: listPlayer.x,
           y: listPlayer.y,

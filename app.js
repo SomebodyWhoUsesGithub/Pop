@@ -44,7 +44,6 @@ io.on('connection', (socket) => {
     players[socket.id].sequenceNumber = sequenceNumber
     switch (keycode) {
       case 'keyW':
-      console.log('a W connected')
         players[socket.id].y -= speed
         break;
       case 'keyA':
