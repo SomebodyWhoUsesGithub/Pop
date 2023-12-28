@@ -28,7 +28,7 @@ io.on('connection', (socket) => {
     sequenceNumber: 0
   }
   io.emit('updatePlayers', players)
-  console.log(players)
+  // console.log(players)
 
   socket.on('disconnect', (reason) => {
     console.log(reason)
@@ -61,7 +61,7 @@ io.on('connection', (socket) => {
 })
 setInterval(() => {
   io.emit('updatePlayers', players)
-  console.log(players)
+  // console.log(players)
 }, 15)
 server.listen(port, () => {
   console.log(`Server listening on port ${port}`)
