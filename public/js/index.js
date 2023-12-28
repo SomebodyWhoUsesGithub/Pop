@@ -1,19 +1,69 @@
 const canvas = document.querySelector('canvas')
 const c = canvas.getContext('2d')
 
+const socket = io()
 const scoreEl = document.querySelector('#scoreEl')
 
-canvas.width = innerWidth
-canvas.height = innerHeight
+const devicePixelRatio = window.devicePixelRatio || 1
+
+canvas.width = innerWidth * devicePixelRatio
+canvas.height = innerHeight * devicePixelRatio
 
 const x = canvas.width / 2
 const y = canvas.height / 2
 const image = new Image()
 image.src = "./img/2303TS.png"
-const player = new Player(x, y, 10, 'gold')
+const imageInv = new Image()
+imageInv.src = "./img/2303TSINV.png"
+// const player = new Player(x, y, 10, 'gold')
+const players = {}
 const projectiles = []
 const enemies = []
 const particles = []
+
+socket.on('updatePlayers', (playersList) => {
+  for (const id in playersList) {
+    const listPlayer = playersList[id]
+    if (!players[id]){
+        players[id] = new Player({
+          x: listPlayer.x,
+          y: listPlayer.y,
+          radius: 10,
+          model: 1,
+          image: image
+        })
+    } else {
+      if (id === socket.id) {
+        players[id].x = listPlayer.x
+        players[id].y = listPlayer.y
+
+        const lastPlayerListInput = playerInputs.findIndex(input => {
+          return listPlayer.sequenceNumber === input.sequenceNumber
+        })
+        if (lastPlayerListInput > -1) {
+          playerInputs.splice(0, lastPlayerListInput + 1)
+          playerInputs.forEach(input => {
+            players[id].x += input.vx
+            players[id].y += input.vy
+          });
+        }
+      }else{
+        gsap.to(players[id],{
+          x: listPlayer.x,
+          y: listPlayer.y,
+          duration: 0.015,
+          ease: 'linear'
+        })
+      }
+    }
+  }
+
+  for (const id in players) {
+    if (!playersList[id]) {
+      delete players[id]
+    }
+  }
+})
 
 function spawnEnemies() {
   setInterval(() => {
@@ -52,7 +102,11 @@ function animate() {
   c.fillStyle = 'rgba(0, 0, 0, 0.1)'
   c.fillRect(0, 0, canvas.width, canvas.height)
 
-  player.draw(image)
+  for (const id in players) {
+    const player = players[id]
+    player.draw()
+  }
+  // player.draw(image)
 
   for (let index = particles.length - 1; index >= 0; index--) {
     const particle = particles[index]
@@ -85,12 +139,14 @@ function animate() {
 
     enemy.update()
 
-    const dist = Math.hypot(player.x - enemy.x, player.y - enemy.y)
+    const dist = Math.hypot(players[socket.id].x - enemy.x, players[socket.id].y - enemy.y)
 
-    //end game
-    if (dist - enemy.radius - player.radius < 1) {
-      cancelAnimationFrame(animationId)
-    }
+    // end game
+    console.log(dist, enemy.radius - players[socket.id].y)
+    // if (dist - enemy.radius - players[socket.id].y < 1) {
+    //   // cancelAnimationFrame(animationId)
+    //   socket.emit('death')
+    // }
 
     for (
       let projectilesIndex = projectiles.length - 1;
@@ -141,3 +197,92 @@ function animate() {
 
 animate()
 spawnEnemies()
+
+//end game
+// const dist = Math.hypot(players[socket.id].x - enemy.x, players[socket.id].y - enemy.y)
+// if (dist - enemy.radius - players[socket.id].y < 1) {
+//   cancelAnimationFrame(animationId)
+// }
+
+const keys={
+  w: {
+    pressed: false
+  },
+  a: {
+    pressed: false
+  },
+  s: {
+    pressed: false
+  },
+  d: {
+    pressed: false
+  }
+}
+const speed = 5
+const playerInputs = []
+let sequenceNumber = 0
+setInterval(() => {
+  if (keys.w.pressed) {
+    sequenceNumber++
+    playerInputs.push({sequenceNumber, vx: 0, vy: -speed})
+    players[socket.id].y -= speed
+    socket.emit('keydown', { keycode: 'keyW', sequenceNumber})
+  }
+  if(keys.a.pressed) {
+    sequenceNumber++
+    playerInputs.push({sequenceNumber, vx: -speed, vy: 0})
+    players[socket.id].x -= speed
+    players[socket.id].image = image
+    socket.emit('keydown', { keycode: 'keyA', sequenceNumber})
+  }
+  if (keys.s.pressed) {
+    sequenceNumber++
+    playerInputs.push({sequenceNumber, vx: 0, vy: +speed})
+    players[socket.id].y += speed
+    socket.emit('keydown', { keycode: 'keyS', sequenceNumber})
+  }
+  if (keys.d.pressed) {
+    sequenceNumber++
+    playerInputs.push({sequenceNumber, vx: +speed, vy: 0})
+    players[socket.id].x += speed
+    players[socket.id].image = imageInv
+    socket.emit('keydown', { keycode: 'keyD', sequenceNumber})
+  }
+}, 15)
+
+window.addEventListener('keydown', (event) => {
+  console.log(event.code)
+  if (!players[socket.id]) return
+  switch (event.code) {
+    case 'KeyW':
+      keys.w.pressed = true
+      break
+    case 'KeyA':
+      keys.a.pressed = true
+      break
+    case 'KeyS':
+      keys.s.pressed = true
+      break
+    case 'KeyD':
+      keys.d.pressed = true
+      break;
+  }
+})
+
+window.addEventListener('keyup', (event) => {
+  if (!players[socket.id]) return
+  switch (event.code) {
+    case 'KeyW':
+    keys.w.pressed = false
+      break
+    case 'KeyA':
+      keys.a.pressed = false
+      break
+    case 'KeyS':
+      keys.s.pressed = false
+      break
+    case 'KeyD':
+      keys.d.pressed = false
+      break;
+  }
+})

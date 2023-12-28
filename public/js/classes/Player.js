@@ -1,26 +1,32 @@
 
 class Player {
-  constructor(x, y, radius, color) {
+  constructor({ x, y, radius, model, image}) {
     this.x = x
     this.y = y
     this.radius = radius
-    this.color = color
+    this.model = model
+    this.image = image
   }
 
-    draw(image) {
-      // c.arc(this.x, this.y, this.radius, 0, Math.PI * 2, false)
+    draw() {
+      // c.arc(this.x, this.y, this.radius * window.devicePxRatio, 0, Math.PI * 2, false)
       // c.fillStyle = this.color
       // c.fill()
       c.drawImage(
-        image,
+        this.image,
         0,
         0,
-        image.width,
-        image.height,
-        this.x - image.width / 20,
-        this.y - image.height / 20,
-        image.width / 10,
-        image.height / 10
+        this.image.width,
+        this.image.height,
+        this.x - this.image.width / 20,
+        this.y - this.image.height / 20,
+        this.image.width / 10,
+        this.image.height / 10
       )
     }
+    // update() {
+    //   this.draw()
+    //   this.x = this.x + this.velocity.x
+    //   this.y = this.y + this.velocity.y
+    // }
 }
