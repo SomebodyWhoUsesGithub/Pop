@@ -2,7 +2,7 @@ const canvas = document.querySelector('canvas')
 const c = canvas.getContext('2d')
 
 const socket = io()
-const scoreEl = document.querySelector('#scoreEl')
+const scoreT = document.querySelector('#scoreT')
 
 const devicePixelRatio = window.devicePixelRatio || 1
 
@@ -18,9 +18,40 @@ imageInv.src = "./img/2303TSINV.png"
 // const player = new Player(x, y, 10, 'gold')
 const players = {}
 const projectiles = []
+const pProjectiles = {}
 const enemies = []
 const particles = []
 
+socket.on("connect", () => {
+  socket.emit('initCanvas', {
+    width: canvas.width,
+    height: canvas.height,
+    devicePixelRatio
+  })
+})
+
+socket.on('updateProjectiles', (playerProjectiles) => {
+    for (const id in playerProjectiles) {
+      const playerProjectile = playerProjectiles[id]
+      if (!pProjectiles[id]) {
+        pProjectiles[id] = new Projectile({
+            x: playerProjectile.x,
+            y: playerProjectile.y,
+            radius: 5,
+            color: players[playerProjectile.playerId]?.color,
+            velocity: playerProjectile.velocity
+          })
+      }else{
+        pProjectiles[id].x += playerProjectiles[id].velocity.x
+        pProjectiles[id].y += playerProjectiles[id].velocity.y
+      }
+    }
+    for (const pProjectileId in pProjectiles) {
+      if (!playerProjectiles[pProjectileId]) {
+        delete pProjectiles[pProjectileId]
+      }
+    }
+})
 socket.on('updatePlayers', (playersList) => {
   for (const id in playersList) {
     const listPlayer = playersList[id]
@@ -30,9 +61,12 @@ socket.on('updatePlayers', (playersList) => {
           y: listPlayer.y,
           radius: 10,
           model: 1,
-          image: image
+          image: image,
+          color: listPlayer.color
         })
+        document.querySelector('#leaderboardPlayers').innerHTML += `<div data-id="${id}">${id}: ${listPlayer.score}</div>`
     } else {
+      document.querySelector(`div [data-id="${id}"]`).innerHTML = `${id}">${id}: ${listPlayer.score}`
       if (id === socket.id) {
         players[id].x = listPlayer.x
         players[id].y = listPlayer.y
@@ -60,6 +94,9 @@ socket.on('updatePlayers', (playersList) => {
 
   for (const id in players) {
     if (!playersList[id]) {
+      const delDiv = document.querySelector(`div [data-id="${id}"]`)
+      //yes
+      delDiv.parentNode.removeChild(delDiv)
       delete players[id]
     }
   }
@@ -107,6 +144,11 @@ function animate() {
     player.draw()
   }
   // player.draw(image)
+  for (const id in pProjectiles) {
+    // console.log(pProjectiles[id]);
+    const pProjectile = pProjectiles[id]
+    pProjectile.draw()
+  }
 
   for (let index = particles.length - 1; index >= 0; index--) {
     const particle = particles[index]
@@ -142,7 +184,7 @@ function animate() {
     const dist = Math.hypot(players[socket.id].x - enemy.x, players[socket.id].y - enemy.y)
 
     // end game
-    console.log(dist, enemy.radius - players[socket.id].y)
+    // console.log(dist, enemy.radius - players[socket.id].y)
     // if (dist - enemy.radius - players[socket.id].y < 1) {
     //   // cancelAnimationFrame(animationId)
     //   socket.emit('death')
@@ -177,7 +219,7 @@ function animate() {
         // this is where we shrink our enemy
         if (enemy.radius - 10 > 5) {
           score += 100
-          scoreEl.innerHTML = score
+          scoreT.innerHTML = score
           gsap.to(enemy, {
             radius: enemy.radius - 10
           })
@@ -185,7 +227,7 @@ function animate() {
         } else {
           // remove enemy if they are too small
           score += 150
-          scoreEl.innerHTML = score
+          scoreT.innerHTML = score
 
           enemies.splice(index, 1)
           projectiles.splice(projectilesIndex, 1)
@@ -251,7 +293,7 @@ setInterval(() => {
 }, 15)
 
 window.addEventListener('keydown', (event) => {
-  console.log(event.code)
+  // console.log(event.code)
   if (!players[socket.id]) return
   switch (event.code) {
     case 'KeyW':

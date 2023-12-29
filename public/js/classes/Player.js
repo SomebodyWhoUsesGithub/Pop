@@ -1,11 +1,12 @@
 
 class Player {
-  constructor({ x, y, radius, model, image}) {
+  constructor({ x, y, radius, model, image, color = 'gold'}) {
     this.x = x
     this.y = y
     this.radius = radius
     this.model = model
     this.image = image
+    this.color = color
   }
 
     draw() {
