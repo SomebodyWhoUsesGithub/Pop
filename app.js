@@ -25,8 +25,8 @@ let projectileId = 0
 io.on('connection', (socket) => {
   console.log('a user connected')
   players[socket.id] = {
-    x: 1600 * Math.random(),
-    y: 900 * Math.random(),
+    x: 700 * Math.random(),
+    y: 700 * Math.random(),
     model: 10 * Math.random(),
     sequenceNumber: 0,
     color: `hsl(${360*Math.random()}, 100%, 50%)`,
@@ -35,7 +35,8 @@ io.on('connection', (socket) => {
   socket.on('initCanvas', ({width, height, devicePixelRatio}) => {
     players[socket.id].canvas = {
       width,
-      height
+      height,
+      devicePixelRatio
     }
     players[socket.id].radius = radius
     if (devicePixelRatio > 1) {
@@ -93,14 +94,15 @@ setInterval(() => {
     playerProjectiles[id].y += playerProjectiles[id].velocity.y
     const projectileRadius = 5
     // gc
+    // console.log(players[playerProjectiles[id].playerId]?.canvas?.devicePixelRatio)
     if (
       playerProjectiles[id].x - projectileRadius >=
       // players[playerProjectiles[id].playerId]?.canvas?.width ||
-      3000 ||
+      2400 ||
       playerProjectiles[id].x - projectileRadius <= 0 ||
       playerProjectiles[id].y - projectileRadius >=
       // players[playerProjectiles[id].playerId]?.canvas?.height ||
-      2000 ||
+      1600 ||
       playerProjectiles[id].y - projectileRadius <= 0
     ) {
       delete playerProjectiles[id]
