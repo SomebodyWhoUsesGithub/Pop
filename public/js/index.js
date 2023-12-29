@@ -181,9 +181,8 @@ function animate() {
 
     enemy.update()
 
-    const dist = Math.hypot(players[socket.id].x - enemy.x, players[socket.id].y - enemy.y)
-
     // end game
+    // const dist = Math.hypot(players[socket.id].x - enemy.x, players[socket.id].y - enemy.y)
     // console.log(dist, enemy.radius - players[socket.id].y)
     // if (dist - enemy.radius - players[socket.id].y < 1) {
     //   // cancelAnimationFrame(animationId)

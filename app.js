@@ -92,6 +92,7 @@ setInterval(() => {
     playerProjectiles[id].x += playerProjectiles[id].velocity.x
     playerProjectiles[id].y += playerProjectiles[id].velocity.y
     const projectileRadius = 5
+    // gc
     if (
       playerProjectiles[id].x - projectileRadius >=
       // players[playerProjectiles[id].playerId]?.canvas?.width ||
@@ -105,7 +106,7 @@ setInterval(() => {
       delete playerProjectiles[id]
       continue
     }
-    // console.log(playerProjectiles);
+    // Pop!
     for(const playerId in players){
       const player = players[playerId]
       const dist = Math.hypot(
