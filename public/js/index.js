@@ -124,6 +124,10 @@ socket.on('updatePlayers', (playersList) => {
         document.querySelector('#signupForm').style.display = 'block'
       }
       delete players[id]
+      keys.w.pressed = false
+      keys.a.pressed = false
+      keys.s.pressed = false
+      keys.d.pressed = false
     }
   }
 })
@@ -334,9 +338,6 @@ setInterval(() => {
       players[socket.id].x += speed
       socket.emit('keydown', { keycode: 'keyD', sequenceNumber})
     }
-    // if (!keys.w.pressed && !keys.s.pressed && !keys.d.pressed && !keys.a.pressed) {
-    //
-    // }
   }
 }, 15)
 
