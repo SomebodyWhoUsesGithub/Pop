@@ -11,10 +11,22 @@ canvas.height = innerHeight * devicePixelRatio
 
 const x = canvas.width / 2
 const y = canvas.height / 2
-const image = new Image()
-image.src = "./img/2303TS.png"
-const imageInv = new Image()
-imageInv.src = "./img/2303TSINV.png"
+const playerImage = new Image()
+playerImage.src = "./img/5bg.png"
+const playerImageD = new Image()
+playerImageD.src = "./img/d5bg.png"
+const playerImageS = new Image()
+playerImageS.src = "./img/s5bg.png"
+const playerImageA = new Image()
+playerImageA.src = "./img/a5bg.png"
+const playerImageWD = new Image()
+playerImageWD.src = "./img/wd5bg.png"
+const playerImageWA = new Image()
+playerImageWA.src = "./img/wa5bg.png"
+const playerImageSD = new Image()
+playerImageSD.src = "./img/sd5bg.png"
+const playerImageSA = new Image()
+playerImageSA.src = "./img/sa5bg.png"
 // const player = new Player(x, y, 10, 'gold')
 const players = {}
 const projectiles = []
@@ -56,7 +68,7 @@ socket.on('updatePlayers', (playersList) => {
           y: listPlayer.y,
           radius: 10,
           model: 1,
-          image: image,
+          image: playerImage,
           color: listPlayer.color,
           // username: ''
         })
@@ -281,28 +293,58 @@ setInterval(() => {
     sequenceNumber++
     playerInputs.push({sequenceNumber, vx: 0, vy: -speed})
     players[socket.id].y -= speed
+    if (keys.d.pressed) {
+      players[socket.id].image = playerImageWD
+    }else if (keys.a.pressed) {
+      players[socket.id].image = playerImageWA
+    }else{
+      players[socket.id].image = playerImage
+    }
     socket.emit('keydown', { keycode: 'keyW', sequenceNumber})
-  }
-  if(keys.a.pressed) {
-    sequenceNumber++
-    playerInputs.push({sequenceNumber, vx: -speed, vy: 0})
-    players[socket.id].x -= speed
-    players[socket.id].image = image
-    socket.emit('keydown', { keycode: 'keyA', sequenceNumber})
   }
   if (keys.s.pressed) {
     sequenceNumber++
     playerInputs.push({sequenceNumber, vx: 0, vy: +speed})
     players[socket.id].y += speed
+    if (keys.d.pressed) {
+      players[socket.id].image = playerImageSD
+    }else if (keys.a.pressed) {
+      players[socket.id].image = playerImageSA
+    }else{
+      players[socket.id].image = playerImageS
+    }
     socket.emit('keydown', { keycode: 'keyS', sequenceNumber})
   }
+  if(keys.a.pressed) {
+    if (!keys.w.pressed && !keys.s.pressed) {
+      players[socket.id].image = playerImageA
+    }
+    sequenceNumber++
+    playerInputs.push({sequenceNumber, vx: -speed, vy: 0})
+    players[socket.id].x -= speed
+    socket.emit('keydown', { keycode: 'keyA', sequenceNumber})
+  }
+
   if (keys.d.pressed) {
+    if (!keys.w.pressed && !keys.s.pressed) {
+      players[socket.id].image = playerImageD
+    }
     sequenceNumber++
     playerInputs.push({sequenceNumber, vx: +speed, vy: 0})
     players[socket.id].x += speed
-    players[socket.id].image = imageInv
     socket.emit('keydown', { keycode: 'keyD', sequenceNumber})
   }
+
+
+  // }
+  // if (keys.s.pressed) {
+  //   if (keys.d.pressed) {
+  //     players[socket.id].image = playerImageSD
+  //   }
+  //   if (keys.a.pressed) {
+  //     players[socket.id].image = playerImageSA
+  //   }
+
 }, 15)
 
 window.addEventListener('keydown', (event) => {

@@ -10,22 +10,22 @@ class Player {
   }
 
     draw() {
-      //Sprite
-      // c.drawImage(
-      //   this.image,
-      //   0,
-      //   0,
-      //   this.image.width,
-      //   this.image.height,
-      //   this.x - this.image.width / 20,
-      //   this.y - this.image.height / 20,
-      //   this.image.width / 10,
-      //   this.image.height / 10
-      // )
-      c.beginPath()
-      c.arc(this.x, this.y, this.radius * window.devicePixelRatio, 0, Math.PI * 2, false)
-      c.fillStyle = this.color
-      c.fill()
+      // Sprite
+      c.drawImage(
+        this.image,
+        0,
+        0,
+        this.image.width,
+        this.image.height,
+        this.x - this.image.width / 20,
+        this.y - this.image.height / 20,
+        this.image.width / 5,
+        this.image.height / 5
+      )
+      // c.beginPath()
+      // c.arc(this.x, this.y, this.radius * window.devicePixelRatio, 0, Math.PI * 2, false)
+      // c.fillStyle = this.color
+      // c.fill()
 
     }
     // update() {
