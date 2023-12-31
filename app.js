@@ -18,7 +18,7 @@ const players = {}
 const playerProjectiles = {}
 
 const speed = 6
-const radius = 10
+const radius = 20
 const projectileRad = 5
 let projectileId = 0
 
@@ -59,7 +59,7 @@ io.on('connection', (socket) => {
       score: 0,
       username
     }
-  
+
     players[socket.id].canvas = {
       width,
       height,
