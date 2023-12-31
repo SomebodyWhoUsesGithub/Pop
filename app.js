@@ -71,20 +71,22 @@ io.on('connection', (socket) => {
     io.emit('updatePlayers', players)
   })
   socket.on('keydown', ({keycode, sequenceNumber}) => {
-    players[socket.id].sequenceNumber = sequenceNumber
-    switch (keycode) {
-      case 'keyW':
-        players[socket.id].y -= speed
-        break;
-      case 'keyA':
-        players[socket.id].x -= speed
-        break;
-      case 'keyS':
-        players[socket.id].y += speed
-        break;
-      case 'keyD':
-        players[socket.id].x += speed
-        break;
+    if (players[socket.id]) {
+      players[socket.id].sequenceNumber = sequenceNumber
+      switch (keycode) {
+        case 'keyW':
+          players[socket.id].y -= speed
+          break;
+        case 'keyA':
+          players[socket.id].x -= speed
+          break;
+        case 'keyS':
+          players[socket.id].y += speed
+          break;
+        case 'keyD':
+          players[socket.id].x += speed
+          break;
+      }
     }
   })
 })
@@ -119,7 +121,12 @@ setInterval(() => {
         dist < projectileRad + player.radius &&
         playerProjectiles[id].playerId !== playerId
       ) {
-        players[playerProjectiles[id].playerId].score = players[playerProjectiles[id].playerId].score + 1000
+        if (players[playerProjectiles[id].playerId]) {
+          players[playerProjectiles[id].playerId].score = players[playerProjectiles[id].playerId].score + 1000
+        }
+        // console.log(playerProjectiles[id])
+        // console.log(playerProjectiles)
+        // TODO: loop through projectiles and delete the removed players projectiles
         delete playerProjectiles[id]
         delete players[playerId]
         break
@@ -128,7 +135,6 @@ setInterval(() => {
   }
   io.emit('updateProjectiles', playerProjectiles)
   io.emit('updatePlayers', players)
-  // console.log(players)
 }, 15)
 server.listen(port, () => {
   console.log(`Server listening on port ${port}`)

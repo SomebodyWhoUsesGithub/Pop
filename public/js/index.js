@@ -64,9 +64,25 @@ socket.on('updatePlayers', (playersList) => {
           image: image,
           color: listPlayer.color
         })
-        document.querySelector('#leaderboardPlayers').innerHTML += `<div data-id="${id}">${id}: ${listPlayer.score}</div>`
+        document.querySelector('#leaderboardPlayers').innerHTML += `<div data-id="${id}" data-score="${listPlayer.score}">${id}: ${listPlayer.score}</div>`
     } else {
       document.querySelector(`div [data-id="${id}"]`).innerHTML = `${id}">${id}: ${listPlayer.score}`
+      document.querySelector(`div [data-id="${id}"]`).setAttribute('data-score', listPlayer.score)
+      const parentDiv = document.querySelector('#leaderboardPlayers')
+      const childDivs = Array.from(parentDiv.querySelectorAll('div'))
+
+      childDivs.sort((a, b) => {
+        const scoreA = Number(a.getAttribute('data-score'))
+        const scoreB = Number(a.getAttribute('data-score'))
+        return scoreB - scoreA
+      })
+      childDivs.forEach(div => {
+         div.remove()
+      })
+      childDivs.forEach(div => {
+         parentDiv.appendChild(div)
+      })
+
       if (id === socket.id) {
         players[id].x = listPlayer.x
         players[id].y = listPlayer.y
@@ -94,9 +110,7 @@ socket.on('updatePlayers', (playersList) => {
 
   for (const id in players) {
     if (!playersList[id]) {
-      const delDiv = document.querySelector(`div [data-id="${id}"]`)
-      //yes
-      delDiv.parentNode.removeChild(delDiv)
+      document.querySelector(`div[data-id="${id}"]`).remove()
       delete players[id]
     }
   }
