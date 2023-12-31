@@ -22,13 +22,8 @@ const pProjectiles = {}
 const enemies = []
 const particles = []
 
-socket.on("connect", () => {
-  socket.emit('initCanvas', {
-    width: canvas.width,
-    height: canvas.height,
-    devicePixelRatio
-  })
-})
+// socket.on("connect", () => {
+// })
 
 socket.on('updateProjectiles', (playerProjectiles) => {
     for (const id in playerProjectiles) {
@@ -62,11 +57,12 @@ socket.on('updatePlayers', (playersList) => {
           radius: 10,
           model: 1,
           image: image,
-          color: listPlayer.color
+          color: listPlayer.color,
+          // username: ''
         })
-        document.querySelector('#leaderboardPlayers').innerHTML += `<div data-id="${id}" data-score="${listPlayer.score}">${id}: ${listPlayer.score}</div>`
+        document.querySelector('#leaderboardPlayers').innerHTML += `<div data-id="${id}" data-score="${listPlayer.score}">${listPlayer.username}: ${listPlayer.score}</div>`
     } else {
-      document.querySelector(`div [data-id="${id}"]`).innerHTML = `${id}">${id}: ${listPlayer.score}`
+      document.querySelector(`div [data-id="${id}"]`).innerHTML = `${listPlayer.username}: ${listPlayer.score}`
       document.querySelector(`div [data-id="${id}"]`).setAttribute('data-score', listPlayer.score)
       const parentDiv = document.querySelector('#leaderboardPlayers')
       const childDivs = Array.from(parentDiv.querySelectorAll('div'))
@@ -340,4 +336,15 @@ window.addEventListener('keyup', (event) => {
       keys.d.pressed = false
       break;
   }
+})
+
+document.querySelector('#signupForm').addEventListener('submit', (e) =>{
+  e.preventDefault()
+  document.querySelector('#signupForm').style.display = 'none'
+  socket.emit('initGame', {
+    width: canvas.width,
+    height: canvas.height,
+    devicePixelRatio,
+    username: document.querySelector('#usernameInput').value
+  })
 })

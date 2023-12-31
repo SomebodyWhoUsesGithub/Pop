@@ -24,25 +24,15 @@ let projectileId = 0
 
 io.on('connection', (socket) => {
   console.log('a user connected')
-  players[socket.id] = {
-    x: 700 * Math.random(),
-    y: 700 * Math.random(),
-    model: 10 * Math.random(),
-    sequenceNumber: 0,
-    color: `hsl(${360*Math.random()}, 100%, 50%)`,
-    score: 0
-  }
-  socket.on('initCanvas', ({width, height, devicePixelRatio}) => {
-    players[socket.id].canvas = {
-      width,
-      height,
-      devicePixelRatio
-    }
-    players[socket.id].radius = radius
-    if (devicePixelRatio > 1) {
-      players[socket.id].radius = 2 * radius
-    }
-  })
+  // players[socket.id] = {
+  //   x: 700 * Math.random(),
+  //   y: 700 * Math.random(),
+  //   model: 10 * Math.random(),
+  //   sequenceNumber: 0,
+  //   color: `hsl(${360*Math.random()}, 100%, 50%)`,
+  //   score: 0,
+  //   username: ''
+  // }
   io.emit('updatePlayers', players)
   // console.log(players)
   socket.on('shoot', ({x, y , angle}) => {
@@ -57,6 +47,27 @@ io.on('connection', (socket) => {
       y,
       velocity,
       playerId: socket.id
+    }
+  })
+  socket.on('initGame', ({width, height, devicePixelRatio, username}) => {
+    players[socket.id] = {
+      x: 700 * Math.random(),
+      y: 700 * Math.random(),
+      model: 10 * Math.random(),
+      sequenceNumber: 0,
+      color: `hsl(${360*Math.random()}, 100%, 50%)`,
+      score: 0,
+      username
+    }
+  
+    players[socket.id].canvas = {
+      width,
+      height,
+      devicePixelRatio
+    }
+    players[socket.id].radius = radius
+    if (devicePixelRatio > 1) {
+      players[socket.id].radius = 2 * radius
     }
   })
 
@@ -76,15 +87,28 @@ io.on('connection', (socket) => {
       switch (keycode) {
         case 'keyW':
           players[socket.id].y -= speed
+          if (players[socket.id].y <= 0) {
+            players[socket.id].y = 1080
+          }
           break;
         case 'keyA':
           players[socket.id].x -= speed
+          if (players[socket.id].x <= 0) {
+            players[socket.id].x = 1920
+          }
           break;
         case 'keyS':
           players[socket.id].y += speed
+          //bounds
+          if (players[socket.id].y >= 1080) {
+            players[socket.id].y = 0
+          }
           break;
         case 'keyD':
           players[socket.id].x += speed
+          if (players[socket.id].x >= 1920) {
+            players[socket.id].x = 0
+          }
           break;
       }
     }
@@ -100,11 +124,11 @@ setInterval(() => {
     if (
       playerProjectiles[id].x - projectileRadius >=
       // players[playerProjectiles[id].playerId]?.canvas?.width ||
-      2400 ||
+      2560 ||
       playerProjectiles[id].x - projectileRadius <= 0 ||
       playerProjectiles[id].y - projectileRadius >=
       // players[playerProjectiles[id].playerId]?.canvas?.height ||
-      1600 ||
+      1440 ||
       playerProjectiles[id].y - projectileRadius <= 0
     ) {
       delete playerProjectiles[id]

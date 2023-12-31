@@ -3,8 +3,15 @@
     <title>Pop!</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <style>
-      body {
-        margin: 0;
+    body {
+       -webkit-font-smoothing: antialiased;
+       -moz-osx-font-smoothing: grayscale;
+       text-rendering: optimizeLegibility;
+       margin: 0;
+      }
+
+      input::placeholder {
+       color: #94a3b8;
       }
       canvas {
         width: 100%;
@@ -30,6 +37,54 @@
       </div>
     </div>
     <canvas></canvas>
+
+    <div
+      style="
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+      "
+    >
+      <form id="signupForm">
+        <div>
+          <input
+            id="usernameInput"
+            type="text"
+            placeholder="Username"
+            style="
+              padding: 10px;
+              border-radius: 10px;
+              border: none;
+              background: #36393e;
+              color: #ffcf00;
+            "
+          />
+        </div>
+        <div style="text-align: center; margin-top: 8px">
+          <button
+            style="
+              padding: 6px 12px;
+              border-radius: 50px;
+              border: none;
+              background-image: linear-gradient(
+                to right,
+                rgb(255, 207, 0),
+                rgb(255, 0, 0)
+              );
+              color: white;
+              cursor: pointer;
+            "
+          >
+            <p style="font-weight: bold">Pop!</p>
+          </button>
+        </div>
+      </form>
+    </div>
 
     <script
       src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.10.2/gsap.min.js"
