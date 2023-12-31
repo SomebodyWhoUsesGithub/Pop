@@ -107,6 +107,10 @@ socket.on('updatePlayers', (playersList) => {
   for (const id in players) {
     if (!playersList[id]) {
       document.querySelector(`div[data-id="${id}"]`).remove()
+
+      if (id === socket.id) {
+        document.querySelector('#signupForm').style.display = 'block'
+      }
       delete players[id]
     }
   }
