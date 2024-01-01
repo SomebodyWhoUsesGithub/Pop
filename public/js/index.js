@@ -381,10 +381,48 @@ window.addEventListener('keyup', (event) => {
 document.querySelector('#signupForm').addEventListener('submit', (e) =>{
   e.preventDefault()
   document.querySelector('#signupForm').style.display = 'none'
-  socket.emit('initGame', {
-    width: canvas.width,
-    height: canvas.height,
-    devicePixelRatio,
-    username: document.querySelector('#usernameInput').value
-  })
+  const handleSendKont = async () => {
+    try {
+      // Check if MetaMask is installed
+      if (typeof window.ethereum !== "undefined") {
+        // Enable MetaMask provider
+        // OLD await window.ethereum.enable();
+        const accounts = await window.ethereum.request({
+            method: "eth_requestAccounts",
+        });
+        console.log(accounts)
+
+        // var web3 = new Web3(window.ethereum);
+        // console.log(web3)
+        // const accounts = await web3.eth.getAccounts();
+
+        // Replace 'yourContractAddress' and 'yourAbi' with the actual contract details
+        // const contractAddress = "yourContractAddress";
+        // const contractAbi = [...yourAbi];
+        //
+        // const contract = new web3.eth.Contract(contractAbi, contractAddress);
+
+        // Replace 'yourFunction' and 'yourParameters' with the actual function and parameters
+        // const transaction = await contract.methods
+        //   .yourFunction(yourParameters)
+        //   .send({
+        //     from: accounts[0],
+        //   });
+
+        // console.log("Transaction Hash:", transaction.transactionHash);
+      } else {
+        alert("MetaMask not installed!");
+      }
+    } catch (error) {
+      console.error("Error sending kont:", error.message);
+    } finally {
+      socket.emit('initGame', {
+        width: canvas.width,
+        height: canvas.height,
+        devicePixelRatio,
+        username: document.querySelector('#usernameInput').value
+      })
+    }
+  };
+  handleSendKont()
 })
