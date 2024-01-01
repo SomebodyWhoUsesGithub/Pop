@@ -5,7 +5,6 @@ document.addEventListener('mousemove', function() {
 });
 addEventListener('click', (event) => {
   if(Date.now() - lastMove > 50) {
-      // Do stuff
       lastMove = Date.now();
       if (players[socket.id]) {
         const playerPosition = {

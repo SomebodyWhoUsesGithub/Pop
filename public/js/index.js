@@ -71,34 +71,17 @@ socket.on('updatePlayers', (playersList) => {
           model: 1,
           image: playerImage,
           color: listPlayer.color,
+          blockchainAccount: listPlayer.blockchainAccount
           // username: ''
         })
-        document.querySelector('#leaderboardPlayers').innerHTML += `<div data-id="${id}" data-score="${listPlayer.score}">${listPlayer.username}: ${listPlayer.score}</div>`
-    } else {
-      document.querySelector(`div [data-id="${id}"]`).innerHTML = `${listPlayer.username}: ${listPlayer.score}`
-      document.querySelector(`div [data-id="${id}"]`).setAttribute('data-score', listPlayer.score)
-      const parentDiv = document.querySelector('#leaderboardPlayers')
-      const childDivs = Array.from(parentDiv.querySelectorAll('div'))
-
-      childDivs.sort((a, b) => {
-        const scoreA = Number(a.getAttribute('data-score'))
-        const scoreB = Number(a.getAttribute('data-score'))
-        return scoreB - scoreA
-      })
-      childDivs.forEach(div => {
-         div.remove()
-      })
-      childDivs.forEach(div => {
-         parentDiv.appendChild(div)
-      })
-
+    }else{
       if (id === socket.id) {
         players[id].x = listPlayer.x
         players[id].y = listPlayer.y
-
         const lastPlayerListInput = playerInputs.findIndex(input => {
           return listPlayer.sequenceNumber === input.sequenceNumber
         })
+
         if (lastPlayerListInput > -1) {
           playerInputs.splice(0, lastPlayerListInput + 1)
           playerInputs.forEach(input => {
@@ -115,22 +98,46 @@ socket.on('updatePlayers', (playersList) => {
         })
       }
     }
-  }
-
-  for (const id in players) {
-    if (!playersList[id]) {
-      document.querySelector(`div[data-id="${id}"]`).remove()
-
-      if (id === socket.id) {
-        document.querySelector('#signupForm').style.display = 'block'
+    for (const id in players) {
+      if (!playersList[id]) {
+        // document.querySelector(`div[data-id="${playersList[socket.id].blockchainAccount}"]`).remove()
+        if (id === socket.id) {
+          document.querySelector('#signupForm').style.display = 'block'
+        }
+        delete players[id]
+        keys.w.pressed = false
+        keys.a.pressed = false
+        keys.s.pressed = false
+        keys.d.pressed = false
       }
-      delete players[id]
-      keys.w.pressed = false
-      keys.a.pressed = false
-      keys.s.pressed = false
-      keys.d.pressed = false
     }
   }
+})
+
+socket.on('updateLeaderboard', (leaderboard) => {
+  for(const id in leaderboard){
+    const leaderboardEntry = leaderboard[id]
+    const entryCheck = document.querySelector(`div[data-id="${id}"]`)
+    if (entryCheck) {
+      document.querySelector(`div[data-id="${id}"]`).remove()
+    }
+    document.querySelector('#leaderboardPlayers').innerHTML += `<div data-id="${id}" data-score="${leaderboardEntry.score}">${leaderboardEntry.playername}: ${leaderboardEntry.score}</div>`
+  }
+
+  const parentDiv = document.querySelector('#leaderboardPlayers')
+  const childDivs = Array.from(parentDiv.querySelectorAll('div'))
+
+  childDivs.sort((a, b) => {
+    const scoreA = Number(a.getAttribute('data-score'))
+    const scoreB = Number(a.getAttribute('data-score'))
+    return scoreB - scoreA
+  })
+  childDivs.forEach(div => {
+     div.remove()
+  })
+  childDivs.forEach(div => {
+     parentDiv.appendChild(div)
+  })
 })
 
 function spawnEnemies() {
@@ -395,6 +402,13 @@ document.querySelector('#signupForm').addEventListener('submit', (e) =>{
         if (accounts[0]) {
           blockchainAccount = accounts[0]
         }
+        socket.emit('initGame', {
+          width: canvas.width,
+          height: canvas.height,
+          devicePixelRatio,
+          username: document.querySelector('#usernameInput').value,
+          blockchainAccount: blockchainAccount
+        })
         // var web3 = new Web3(window.ethereum);
         // console.log(web3)
         // const accounts = await web3.eth.getAccounts();
@@ -419,13 +433,7 @@ document.querySelector('#signupForm').addEventListener('submit', (e) =>{
     } catch (error) {
       console.error("Error sending kont:", error.message);
     } finally {
-      socket.emit('initGame', {
-        width: canvas.width,
-        height: canvas.height,
-        devicePixelRatio,
-        username: document.querySelector('#usernameInput').value,
-        blockchainAccount: blockchainAccount
-      })
+      console.log('success')
     }
   };
   handleSendKont()

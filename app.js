@@ -14,6 +14,7 @@ app.get('/', (req, res) => {
 
 const players = {}
 const playerProjectiles = {}
+const leaderboard = {}
 
 const speed = 6
 const radius = 20
@@ -22,17 +23,7 @@ let projectileId = 0
 
 io.on('connection', (socket) => {
   console.log('a user connected')
-  // players[socket.id] = {
-  //   x: 700 * Math.random(),
-  //   y: 700 * Math.random(),
-  //   model: 10 * Math.random(),
-  //   sequenceNumber: 0,
-  //   color: `hsl(${360*Math.random()}, 100%, 50%)`,
-  //   score: 0,
-  //   username: ''
-  // }
-  io.emit('updatePlayers', players)
-  // console.log(players)
+  // io.emit('updatePlayers', players)
   socket.on('shoot', ({x, y , angle}) => {
     ++projectileId;
     const velocity = {
@@ -47,8 +38,8 @@ io.on('connection', (socket) => {
       playerId: socket.id
     }
   })
+
   socket.on('initGame', ({width, height, devicePixelRatio, username, blockchainAccount}) => {
-    // handleSendKont()
     players[socket.id] = {
       x: 700 * Math.random(),
       y: 700 * Math.random(),
@@ -58,6 +49,12 @@ io.on('connection', (socket) => {
       score: 0,
       username,
       blockchainAccount
+    }
+    if (!leaderboard[blockchainAccount]) {
+      leaderboard[blockchainAccount] = {
+        score: 0,
+        playername: players[socket.id].username
+      }
     }
     players[socket.id].canvas = {
       width,
@@ -80,6 +77,7 @@ io.on('connection', (socket) => {
     delete players[socket.id]
     io.emit('updatePlayers', players)
   })
+
   socket.on('keydown', ({keycode, sequenceNumber}) => {
     if (players[socket.id]) {
       players[socket.id].sequenceNumber = sequenceNumber
@@ -113,6 +111,7 @@ io.on('connection', (socket) => {
     }
   })
 })
+
 setInterval(() => {
   for (const id in playerProjectiles) {
     playerProjectiles[id].x += playerProjectiles[id].velocity.x
@@ -145,10 +144,10 @@ setInterval(() => {
         playerProjectiles[id].playerId !== playerId
       ) {
         if (players[playerProjectiles[id].playerId]) {
-          players[playerProjectiles[id].playerId].score = players[playerProjectiles[id].playerId].score + 1000
+          if (player.blockchainAccount !== players[playerProjectiles[id].playerId].blockchainAccount) {
+            leaderboard[players[playerProjectiles[id].playerId].blockchainAccount].score = players[playerProjectiles[id].playerId].score + 1000
+          }
         }
-        // console.log(playerProjectiles[id])
-        // console.log(playerProjectiles)
         // TODO: loop through projectiles and delete the removed players projectiles
         delete playerProjectiles[id]
         delete players[playerId]
@@ -158,6 +157,7 @@ setInterval(() => {
   }
   io.emit('updateProjectiles', playerProjectiles)
   io.emit('updatePlayers', players)
+  io.emit('updateLeaderboard', leaderboard)
 }, 15)
 server.listen(port, () => {
   console.log(`Server listening on port ${port}`)
