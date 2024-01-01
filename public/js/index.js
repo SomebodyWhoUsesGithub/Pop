@@ -1,6 +1,5 @@
 const canvas = document.querySelector('canvas')
 const c = canvas.getContext('2d')
-
 const socket = io()
 const scoreT = document.querySelector('#scoreT')
 
@@ -27,6 +26,8 @@ const playerImageSD = new Image()
 playerImageSD.src = "./img/sd5bg.png"
 const playerImageSA = new Image()
 playerImageSA.src = "./img/sa5bg.png"
+const imageSama = new Image()
+imageSama.src = "./img/samaIco.png"
 // const player = new Player(x, y, 10, 'gold')
 const players = {}
 const projectiles = []
@@ -142,6 +143,7 @@ socket.on('updateLeaderboard', (leaderboard) => {
 
 function spawnEnemies() {
   setInterval(() => {
+    // const radius = Math.random() * (30 - 4) + 4
     const radius = Math.random() * (30 - 4) + 4
     let x
     let y
@@ -164,7 +166,7 @@ function spawnEnemies() {
         y: (Math.sin(angle) * (1 + multiplier / 10))
       }
 
-      enemies.push(new Enemy(x, y, radius, color, velocity))
+      enemies.push(new Enemy(x, y, radius, color, velocity, imageSama))
       console.log(i,multiplier)
     }
   }, 2000)

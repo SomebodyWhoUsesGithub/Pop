@@ -22,15 +22,5 @@ class Player {
         this.image.width / 5,
         this.image.height / 5
       )
-      // c.beginPath()
-      // c.arc(this.x, this.y, this.radius * window.devicePixelRatio, 0, Math.PI * 2, false)
-      // c.fillStyle = this.color
-      // c.fill()
-
     }
-    // update() {
-    //   this.draw()
-    //   this.x = this.x + this.velocity.x
-    //   this.y = this.y + this.velocity.y
-    // }
 }
