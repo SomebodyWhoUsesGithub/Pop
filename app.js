@@ -145,7 +145,7 @@ setInterval(() => {
       ) {
         if (players[playerProjectiles[id].playerId]) {
           if (player.blockchainAccount !== players[playerProjectiles[id].playerId].blockchainAccount) {
-            leaderboard[players[playerProjectiles[id].playerId].blockchainAccount].score = players[playerProjectiles[id].playerId].score + 1000
+            leaderboard[players[playerProjectiles[id].playerId].blockchainAccount].score = leaderboard[players[playerProjectiles[id].playerId].blockchainAccount].score + 1000
           }
         }
         // TODO: loop through projectiles and delete the removed players projectiles
