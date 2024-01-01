@@ -33,6 +33,7 @@ const projectiles = []
 const pProjectiles = {}
 const enemies = []
 const particles = []
+let blockchainAccount = ''
 
 // socket.on("connect", () => {
 // })
@@ -390,8 +391,10 @@ document.querySelector('#signupForm').addEventListener('submit', (e) =>{
         const accounts = await window.ethereum.request({
             method: "eth_requestAccounts",
         });
-        console.log(accounts)
-
+        // console.log(accounts)
+        if (accounts[0]) {
+          blockchainAccount = accounts[0]
+        }
         // var web3 = new Web3(window.ethereum);
         // console.log(web3)
         // const accounts = await web3.eth.getAccounts();
@@ -420,7 +423,8 @@ document.querySelector('#signupForm').addEventListener('submit', (e) =>{
         width: canvas.width,
         height: canvas.height,
         devicePixelRatio,
-        username: document.querySelector('#usernameInput').value
+        username: document.querySelector('#usernameInput').value,
+        blockchainAccount: blockchainAccount
       })
     }
   };

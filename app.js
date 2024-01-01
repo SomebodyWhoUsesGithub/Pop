@@ -47,7 +47,7 @@ io.on('connection', (socket) => {
       playerId: socket.id
     }
   })
-  socket.on('initGame', ({width, height, devicePixelRatio, username}) => {
+  socket.on('initGame', ({width, height, devicePixelRatio, username, blockchainAccount}) => {
     // handleSendKont()
     players[socket.id] = {
       x: 700 * Math.random(),
@@ -56,7 +56,8 @@ io.on('connection', (socket) => {
       sequenceNumber: 0,
       color: `hsl(${360*Math.random()}, 100%, 50%)`,
       score: 0,
-      username
+      username,
+      blockchainAccount
     }
     players[socket.id].canvas = {
       width,
