@@ -34,6 +34,7 @@ const projectiles = []
 const pProjectiles = {}
 const enemies = []
 const particles = []
+const chainId = '0x144'
 let blockchainAccount = ''
 
 // socket.on("connect", () => {
@@ -94,7 +95,7 @@ socket.on('updatePlayers', (playersList) => {
         gsap.to(players[id],{
           x: listPlayer.x,
           y: listPlayer.y,
-          duration: 0.015,
+          duration: 0.0015,
           ease: 'linear'
         })
       }
@@ -166,8 +167,7 @@ function spawnEnemies() {
         y: (Math.sin(angle) * (1 + multiplier / 10))
       }
 
-      enemies.push(new Enemy(x, y, radius, color, velocity, imageSama))
-      console.log(i,multiplier)
+      // enemies.push(new Enemy(x, y, radius, color, velocity, imageSama))
     }
   }, 2000)
 }
@@ -216,64 +216,64 @@ function animate() {
     }
   }
 
-  for (let index = enemies.length - 1; index >= 0; index--) {
-    const enemy = enemies[index]
-
-    enemy.update()
-
-    // end game
-    // const dist = Math.hypot(players[socket.id].x - enemy.x, players[socket.id].y - enemy.y)
-    // console.log(dist, enemy.radius - players[socket.id].y)
-    // if (dist - enemy.radius - players[socket.id].y < 1) {
-    //   // cancelAnimationFrame(animationId)
-    //   socket.emit('death')
-    // }
-
-    for (
-      let projectilesIndex = projectiles.length - 1;
-      projectilesIndex >= 0;
-      projectilesIndex--
-    ) {
-      const projectile = projectiles[projectilesIndex]
-
-      const dist = Math.hypot(projectile.x - enemy.x, projectile.y - enemy.y)
-
-      // when projectiles touch enemy
-      if (dist - enemy.radius - projectile.radius < 1) {
-        // create explosions
-        for (let i = 0; i < enemy.radius * 2; i++) {
-          particles.push(
-            new Particle(
-              projectile.x,
-              projectile.y,
-              Math.random() * 2,
-              enemy.color,
-              {
-                x: (Math.random() - 0.5) * (Math.random() * 6),
-                y: (Math.random() - 0.5) * (Math.random() * 6)
-              }
-            )
-          )
-        }
-        // this is where we shrink our enemy
-        if (enemy.radius - 10 > 5) {
-          score += 100
-          scoreT.innerHTML = score
-          gsap.to(enemy, {
-            radius: enemy.radius - 10
-          })
-          projectiles.splice(projectilesIndex, 1)
-        } else {
-          // remove enemy if they are too small
-          score += 150
-          scoreT.innerHTML = score
-
-          enemies.splice(index, 1)
-          projectiles.splice(projectilesIndex, 1)
-        }
-      }
-    }
-  }
+  // for (let index = enemies.length - 1; index >= 0; index--) {
+  //   const enemy = enemies[index]
+  //
+  //   enemy.update()
+  //
+  //   // end game
+  //   const dist = Math.hypot(players[socket.id].x - enemy.x, players[socket.id].y - enemy.y)
+  //   console.log(dist, enemy.radius - players[socket.id].y)
+  //   if (dist - enemy.radius - players[socket.id].y < 1) {
+  //     // cancelAnimationFrame(animationId)
+  //     socket.emit('death')
+  //   }
+  //
+  //   for (
+  //     let projectilesIndex = projectiles.length - 1;
+  //     projectilesIndex >= 0;
+  //     projectilesIndex--
+  //   ) {
+  //     const projectile = projectiles[projectilesIndex]
+  //
+  //     const dist = Math.hypot(projectile.x - enemy.x, projectile.y - enemy.y)
+  //
+  //     // when projectiles touch enemy
+  //     if (dist - enemy.radius - projectile.radius < 1) {
+  //       // create explosions
+  //       for (let i = 0; i < enemy.radius * 2; i++) {
+  //         particles.push(
+  //           new Particle(
+  //             projectile.x,
+  //             projectile.y,
+  //             Math.random() * 2,
+  //             enemy.color,
+  //             {
+  //               x: (Math.random() - 0.5) * (Math.random() * 6),
+  //               y: (Math.random() - 0.5) * (Math.random() * 6)
+  //             }
+  //           )
+  //         )
+  //       }
+  //       // this is where we shrink our enemy
+  //       if (enemy.radius - 10 > 5) {
+  //         score += 100
+  //         scoreT.innerHTML = score
+  //         gsap.to(enemy, {
+  //           radius: enemy.radius - 10
+  //         })
+  //         projectiles.splice(projectilesIndex, 1)
+  //       } else {
+  //         // remove enemy if they are too small
+  //         score += 150
+  //         scoreT.innerHTML = score
+  //
+  //         enemies.splice(index, 1)
+  //         projectiles.splice(projectilesIndex, 1)
+  //       }
+  //     }
+  //   }
+  // }
 }
 
 animate()
@@ -395,8 +395,32 @@ document.querySelector('#signupForm').addEventListener('submit', (e) =>{
     try {
       // Check if MetaMask is installed
       if (typeof window.ethereum !== "undefined") {
-        // Enable MetaMask provider
-        // OLD await window.ethereum.enable();
+
+        if (window.ethereum.request({method: 'net_version'}) !== chainId) {
+          try {
+            await window.ethereum.request({
+              method: 'wallet_switchEthereumChain',
+              params: [{ chainId: chainId }]
+            });
+          } catch (err) {
+            console.log(err)
+              // This error code indicates that the chain has not been added to MetaMask
+            if (err.code === 4902) {
+              await window.ethereum.request({
+                method: 'wallet_addEthereumChain',
+                params: [
+                  {
+                    chainName: 'ZKSync and Fakesama Stink',
+                    chainId: chainId,
+                    nativeCurrency: { name: 'FakeSama', decimals: 18, symbol: 'FakeSama' },
+                    rpcUrls: ['https://mainnet.era.zksync.io']
+                  }
+                ]
+              });
+            }
+          }
+        }
+
         const accounts = await window.ethereum.request({
             method: "eth_requestAccounts",
         });
@@ -435,7 +459,7 @@ document.querySelector('#signupForm').addEventListener('submit', (e) =>{
     } catch (error) {
       console.error("Error sending kont:", error.message);
     } finally {
-      console.log('success')
+      console.log('Kont.send')
     }
   };
   handleSendKont()
