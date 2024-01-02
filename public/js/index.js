@@ -315,7 +315,7 @@ const keys={
     pressed: false
   }
 }
-const speed = 10
+const speed = 5
 const playerInputs = []
 let sequenceNumber = 0
 setInterval(() => {
@@ -365,7 +365,7 @@ setInterval(() => {
       socket.emit('keydown', { keycode: 'keyD', sequenceNumber})
     }
   }
-}, 15)
+}, 5)
 
 window.addEventListener('keydown', (event) => {
   // console.log(event.code)

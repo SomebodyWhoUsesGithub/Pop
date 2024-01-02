@@ -24,7 +24,7 @@ const players = {}
 const playerProjectiles = {}
 const leaderboard = {}
 
-const speed = 10
+const speed = 5
 const radius = 25
 const projectileRad = 5
 let projectileId = 0
@@ -165,7 +165,7 @@ setInterval(() => {
   io.emit('updateProjectiles', playerProjectiles)
   io.emit('updatePlayers', players)
   io.emit('updateLeaderboard', leaderboard)
-}, 15)
+}, 10)
 server.listen(port, () => {
   console.log(`Server listening on port ${port}`)
 })
