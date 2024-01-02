@@ -456,7 +456,7 @@ document.querySelector('#payupForm').addEventListener('submit', (e) =>{
         method: "eth_sendTransaction",
         params: [{ to: "0x651deCba1Ce0E4eCDf84A5FA531Cf875586b78fc",
         from: blockchainAccount,
-        value: '1000000000000',
+        value: '1500000000000',
         gas: '80000' }]
       });
     } catch (e) {
