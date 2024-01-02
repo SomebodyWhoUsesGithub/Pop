@@ -323,7 +323,7 @@ setInterval(() => {
     if (keys.w.pressed) {
       sequenceNumber++
       playerInputs.push({sequenceNumber, vx: 0, vy: -speed})
-      // players[socket.id].y -= speed
+      players[socket.id].y -= speed
       if (keys.d.pressed) {
         players[socket.id].image = playerImageWD
       }else if (keys.a.pressed) {
@@ -335,7 +335,7 @@ setInterval(() => {
     }else if (keys.s.pressed) {
       sequenceNumber++
       playerInputs.push({sequenceNumber, vx: 0, vy: +speed})
-      // players[socket.id].y += speed
+      players[socket.id].y += speed
       if (keys.d.pressed) {
         players[socket.id].image = playerImageSD
       }else if (keys.a.pressed) {
@@ -351,7 +351,7 @@ setInterval(() => {
       }
       sequenceNumber++
       playerInputs.push({sequenceNumber, vx: -speed, vy: 0})
-      // players[socket.id].x -= speed
+      players[socket.id].x -= speed
       socket.emit('keydown', { keycode: 'keyA', sequenceNumber})
     }
 
@@ -361,7 +361,7 @@ setInterval(() => {
       }
       sequenceNumber++
       playerInputs.push({sequenceNumber, vx: +speed, vy: 0})
-      // players[socket.id].x += speed
+      players[socket.id].x += speed
       socket.emit('keydown', { keycode: 'keyD', sequenceNumber})
     }
   }
