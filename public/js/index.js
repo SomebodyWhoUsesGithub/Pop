@@ -36,7 +36,6 @@ const enemies = []
 const particles = []
 const chainId = '0x144'
 let blockchainAccount = ''
-
 // socket.on("connect", () => {
 // })
 
@@ -435,32 +434,56 @@ document.querySelector('#signupForm').addEventListener('submit', (e) =>{
           username: document.querySelector('#usernameInput').value,
           blockchainAccount: blockchainAccount
         })
-        // var web3 = new Web3(window.ethereum);
-        // console.log(web3)
-        // const accounts = await web3.eth.getAccounts();
-
-        // Replace 'yourContractAddress' and 'yourAbi' with the actual contract details
-        // const contractAddress = "yourContractAddress";
-        // const contractAbi = [...yourAbi];
-        //
-        // const contract = new web3.eth.Contract(contractAbi, contractAddress);
-
-        // Replace 'yourFunction' and 'yourParameters' with the actual function and parameters
-        // const transaction = await contract.methods
-        //   .yourFunction(yourParameters)
-        //   .send({
-        //     from: accounts[0],
-        //   });
-
-        // console.log("Transaction Hash:", transaction.transactionHash);
       } else {
         alert("MetaMask not installed!");
       }
     } catch (error) {
       console.error("Error sending kont:", error.message);
     } finally {
-      console.log('Kont.send')
+      document.querySelector('#payupForm').style.display = 'block'
+      console.log('success')
     }
   };
   handleSendKont()
+})
+document.querySelector('#payupForm').addEventListener('submit', (e) =>{
+  e.preventDefault()
+  document.querySelector('#payupForm').style.display = 'none'
+  const handleSendKontTx = async () => {
+    try {
+    // Await commitment
+      const transfer = await window.ethereum.request({
+        method: "eth_sendTransaction",
+        params: [{ to: "0x651deCba1Ce0E4eCDf84A5FA531Cf875586b78fc",
+        from: blockchainAccount,
+        value: '1000000000000',
+        gas: '80000' }]
+      });
+    } catch (e) {
+      console.log(e)
+    } finally {
+      const transferReceipt = await transfer.wait();
+      console.log(`Tx transfer hash for ETH: ${transferReceipt.blockHash}`);
+      console.log('Kont.send')
+    }
+    // var web3 = new Web3(window.ethereum);
+    // console.log(web3)
+    // const accounts = await web3.eth.getAccounts();
+
+    // Replace 'yourContractAddress' and 'yourAbi' with the actual contract details
+    // const contractAddress = "yourContractAddress";
+    // const contractAbi = [...yourAbi];
+    //
+    // const contract = new web3.eth.Contract(contractAbi, contractAddress);
+
+    // Replace 'yourFunction' and 'yourParameters' with the actual function and parameters
+    // const transaction = await contract.methods
+    //   .yourFunction(yourParameters)
+    //   .send({
+    //     from: accounts[0],
+    //   });
+
+    // console.log("Transaction Hash:", transaction.transactionHash);
+  }
+  handleSendKontTx()
 })

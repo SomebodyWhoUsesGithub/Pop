@@ -5,8 +5,12 @@ const server = http.createServer(app);
 const { Server } = require('socket.io')
 const io = new Server(server, { pingInterval: 2000, pingTimeout:5000 })
 const port = 3000
-// const zksync = require('zksync-ethers')
-// const ethers = require('ethers')
+const zksync = require('zksync-ethers')
+const ethers = require('ethers')
+// const provider = new ethers.providers.JsonRpcProvider();
+// const gas = provider.getGasPrice()
+// console.log(gas)
+
 
 app.use(express.static('public'))
 
