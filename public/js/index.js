@@ -76,7 +76,7 @@ socket.on('updatePlayers', (playersList) => {
         players[id] = new Player({
           x: listPlayer.x,
           y: listPlayer.y,
-          radius: 10,
+          radius: 25,
           model: 1,
           image: playerImage,
           color: listPlayer.color,

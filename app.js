@@ -25,7 +25,7 @@ const playerProjectiles = {}
 const leaderboard = {}
 
 const speed = 6
-const radius = 20
+const radius = 25
 const projectileRad = 5
 let projectileId = 0
 
@@ -91,27 +91,27 @@ io.on('connection', (socket) => {
       switch (keycode) {
         case 'keyW':
           players[socket.id].y -= speed
-          if (players[socket.id].y <= 0) {
-            players[socket.id].y = gameCanvasY
+          if (players[socket.id].y <= players[socket.id].radius) {
+            players[socket.id].y = players[socket.id].radius
           }
           break;
         case 'keyA':
           players[socket.id].x -= speed
-          if (players[socket.id].x <= 0) {
-            players[socket.id].x = gameCanvasX
+          if (players[socket.id].x <= players[socket.id].radius) {
+            players[socket.id].x = players[socket.id].radius
           }
           break;
         case 'keyS':
           players[socket.id].y += speed
           //bounds
-          if (players[socket.id].y >= gameCanvasY) {
-            players[socket.id].y = 0
+          if (players[socket.id].y >= gameCanvasY - players[socket.id].radius) {
+            players[socket.id].y = gameCanvasY - players[socket.id].radius
           }
           break;
         case 'keyD':
           players[socket.id].x += speed
-          if (players[socket.id].x >= gameCanvasX) {
-            players[socket.id].x = 0
+          if (players[socket.id].x >= gameCanvasX - players[socket.id].radius) {
+            players[socket.id].x = gameCanvasX - players[socket.id].radius
           }
           break;
       }
