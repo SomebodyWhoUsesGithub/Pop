@@ -426,9 +426,9 @@ document.querySelector('#signupForm').addEventListener('submit', (e) =>{
                 method: 'wallet_addEthereumChain',
                 params: [
                   {
-                    chainName: 'ZKSync and Fakesama Stink',
+                    chainName: 'ZKSync Mainnet',
                     chainId: chainId,
-                    nativeCurrency: { name: 'FakeSama', decimals: 18, symbol: 'FakeSama' },
+                    nativeCurrency: { name: 'ETH', decimals: 18, symbol: 'ETH' },
                     rpcUrls: ['https://mainnet.era.zksync.io']
                   }
                 ]
