@@ -192,12 +192,12 @@ function animate() {
 
   for (const id in players) {
     const player = players[id]
-    player.draw()
 
     if (player.target) {
       players[id].x += (players[id].target.x - players[id].x) * 0.5
       players[id].y += (players[id].target.y - players[id].y) * 0.5
     }
+    player.draw()
   }
   // player.draw(image)
   for (const id in pProjectiles) {
@@ -315,7 +315,7 @@ const keys={
     pressed: false
   }
 }
-const speed = 3
+const speed = 10
 const playerInputs = []
 let sequenceNumber = 0
 setInterval(() => {
@@ -323,7 +323,7 @@ setInterval(() => {
     if (keys.w.pressed) {
       sequenceNumber++
       playerInputs.push({sequenceNumber, vx: 0, vy: -speed})
-      players[socket.id].y -= speed
+      // players[socket.id].y -= speed
       if (keys.d.pressed) {
         players[socket.id].image = playerImageWD
       }else if (keys.a.pressed) {
@@ -335,7 +335,7 @@ setInterval(() => {
     }else if (keys.s.pressed) {
       sequenceNumber++
       playerInputs.push({sequenceNumber, vx: 0, vy: +speed})
-      players[socket.id].y += speed
+      // players[socket.id].y += speed
       if (keys.d.pressed) {
         players[socket.id].image = playerImageSD
       }else if (keys.a.pressed) {
@@ -351,7 +351,7 @@ setInterval(() => {
       }
       sequenceNumber++
       playerInputs.push({sequenceNumber, vx: -speed, vy: 0})
-      players[socket.id].x -= speed
+      // players[socket.id].x -= speed
       socket.emit('keydown', { keycode: 'keyA', sequenceNumber})
     }
 
@@ -361,7 +361,7 @@ setInterval(() => {
       }
       sequenceNumber++
       playerInputs.push({sequenceNumber, vx: +speed, vy: 0})
-      players[socket.id].x += speed
+      // players[socket.id].x += speed
       socket.emit('keydown', { keycode: 'keyD', sequenceNumber})
     }
   }

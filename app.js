@@ -24,7 +24,7 @@ const players = {}
 const playerProjectiles = {}
 const leaderboard = {}
 
-const speed = 4
+const speed = 10
 const radius = 25
 const projectileRad = 5
 let projectileId = 0

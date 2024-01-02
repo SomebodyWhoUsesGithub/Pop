@@ -12,22 +12,22 @@ class Player {
 
     draw() {
       c.font = '18px sans-serif',
-      c.fillStyle = 'rgb(196, 0, 255)',
+      c.fillStyle = this.color,
       c.fillText(this.username, this.x - 30, this.y - 50)
       // Sprite
       c.save()
       c.shadowColor = this.color,
-      c.shadowBlur = 25,
+      c.shadowBlur = 20,
       c.drawImage(
         this.image,
         0,
         0,
         this.image.width,
         this.image.height,
-        this.x - this.image.width / 10,
-        this.y - this.image.height / 10,
-        this.image.width / 5,
-        this.image.height / 5
+        this.x - this.image.width / 6,
+        this.y - this.image.height / 6,
+        this.image.width / 3,
+        this.image.height / 3
       )
       c.restore()
     }
