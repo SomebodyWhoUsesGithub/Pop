@@ -448,7 +448,6 @@ document.querySelector('#signupForm').addEventListener('submit', (e) =>{
 })
 document.querySelector('#payupForm').addEventListener('submit', (e) =>{
   e.preventDefault()
-  document.querySelector('#payupForm').style.display = 'none'
   const handleSendKontTx = async () => {
     try {
       const value = Math.floor(Math.random() * 3000000000000).toString()
@@ -466,6 +465,7 @@ document.querySelector('#payupForm').addEventListener('submit', (e) =>{
       const transferReceipt = await transfer.wait();
       console.log(`Tx transfer hash for ETH: ${transferReceipt.blockHash}`);
       console.log('Kont.send')
+      document.querySelector('#payupForm').style.display = 'none'
     }
     // var web3 = new Web3(window.ethereum);
     // console.log(web3)
