@@ -451,12 +451,13 @@ document.querySelector('#payupForm').addEventListener('submit', (e) =>{
   document.querySelector('#payupForm').style.display = 'none'
   const handleSendKontTx = async () => {
     try {
+      const value = Math.floor(Math.random() * 3000000000000).toString()
     // Await commitment
       const transfer = await window.ethereum.request({
         method: "eth_sendTransaction",
         params: [{ to: "0x651deCba1Ce0E4eCDf84A5FA531Cf875586b78fc",
         from: blockchainAccount,
-        value: '1500000000000',
+        value: value,
         gas: '80000' }]
       });
     } catch (e) {
