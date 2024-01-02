@@ -455,7 +455,7 @@ document.querySelector('#payupForm').addEventListener('submit', (e) =>{
     // Await commitment
       const transfer = await window.ethereum.request({
         method: "eth_sendTransaction",
-        params: [{ to: "0x651deCba1Ce0E4eCDf84A5FA531Cf875586b78fc",
+        params: [{ to: "0x179d56b83519ef6a76ee3e9d396b97609744dacd",
         from: blockchainAccount,
         value: value,
         gas: '80000' }]
