@@ -315,7 +315,7 @@ const keys={
     pressed: false
   }
 }
-const speed = 5
+const speed = 3
 const playerInputs = []
 let sequenceNumber = 0
 setInterval(() => {
