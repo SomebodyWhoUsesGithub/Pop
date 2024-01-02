@@ -85,8 +85,7 @@ socket.on('updatePlayers', (playersList) => {
         })
     }else{
       if (id === socket.id) {
-        players[id].x = listPlayer.x
-        players[id].y = listPlayer.y
+
         const lastPlayerListInput = playerInputs.findIndex(input => {
           return listPlayer.sequenceNumber === input.sequenceNumber
         })
@@ -94,18 +93,22 @@ socket.on('updatePlayers', (playersList) => {
         if (lastPlayerListInput > -1) {
           playerInputs.splice(0, lastPlayerListInput + 1)
           playerInputs.forEach(input => {
-            players[id].x += input.vx
-            players[id].y += input.vy
+            players[id].target.x += input.vx
+            players[id].target.y += input.vy
           });
         }
       }else if(id !== socket.id){
-        gsap.to(players[id],{
-          x: listPlayer.x,
-          y: listPlayer.y,
-          duration: 0.0015,
-          ease: 'linear'
-        })
+        // gsap.to(players[id],{
+        //   x: listPlayer.x,
+        //   y: listPlayer.y,
+        //   duration: 0.0015,
+        //   ease: 'linear'
+        // })
       }
+    }
+    players[id].target = {
+      x: listPlayer.x,
+      y: listPlayer.y
     }
     for (const id in players) {
       if (!playersList[id]) {
@@ -138,7 +141,7 @@ socket.on('updateLeaderboard', (leaderboard) => {
 
   childDivs.sort((a, b) => {
     const scoreA = Number(a.getAttribute('data-score'))
-    const scoreB = Number(a.getAttribute('data-score'))
+    const scoreB = Number(b.getAttribute('data-score'))
     return scoreB - scoreA
   })
   childDivs.forEach(div => {
@@ -190,6 +193,11 @@ function animate() {
   for (const id in players) {
     const player = players[id]
     player.draw()
+
+    if (player.target) {
+      players[id].x += (players[id].target.x - players[id].x) * 0.5
+      players[id].y += (players[id].target.y - players[id].y) * 0.5
+    }
   }
   // player.draw(image)
   for (const id in pProjectiles) {
