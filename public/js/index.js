@@ -5,9 +5,17 @@ const scoreT = document.querySelector('#scoreT')
 
 const devicePixelRatio = window.devicePixelRatio || 1
 
-canvas.width = innerWidth * devicePixelRatio
-canvas.height = innerHeight * devicePixelRatio
+canvas.width = 1920 * devicePixelRatio
+canvas.height = 1080 * devicePixelRatio
 
+c.scale(devicePixelRatio, devicePixelRatio)
+if (window.matchMedia("(orientation: portrait)").matches) {
+   // you're in PORTRAIT mode
+   alert('Please use landscape mode or maximize your window')
+}
+if (window.matchMedia("(orientation: landscape)").matches) {
+   // you're in LANDSCAPE mode
+}
 const x = canvas.width / 2
 const y = canvas.height / 2
 const playerImage = new Image()
@@ -72,8 +80,8 @@ socket.on('updatePlayers', (playersList) => {
           model: 1,
           image: playerImage,
           color: listPlayer.color,
-          blockchainAccount: listPlayer.blockchainAccount
-          // username: ''
+          blockchainAccount: listPlayer.blockchainAccount,
+          username: listPlayer.username
         })
     }else{
       if (id === socket.id) {
@@ -175,8 +183,9 @@ let animationId
 let score = 0
 function animate() {
   animationId = requestAnimationFrame(animate)
-  c.fillStyle = 'rgba(0, 0, 0, 0.1)'
-  c.fillRect(0, 0, canvas.width, canvas.height)
+  // c.fillStyle = 'rgba(0, 0, 0, 0.1)'
+  // c.fillRect(0, 0, canvas.width, canvas.height)
+  c.clearRect(0, 0, canvas.width, canvas.height)
 
   for (const id in players) {
     const player = players[id]

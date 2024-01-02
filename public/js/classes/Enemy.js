@@ -9,6 +9,9 @@ class Enemy {
   }
 
   draw() {
+    c.save()
+    c.shadowColor = this.color,
+    c.shadowBlur = 25,
     c.drawImage(
       this.image,
       0,
@@ -30,6 +33,7 @@ class Enemy {
     c.arc((this.x - this.image.width) / 10, (this.y - this.image.height) / 10, this.radius, 0, Math.PI * 2, false)
     c.fillStyle = this.color
     c.fill()
+    c.restore()
     // c.globalCompositeOperation='source-over';
   }
 

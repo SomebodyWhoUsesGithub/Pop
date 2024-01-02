@@ -1,9 +1,12 @@
 var lastMove = 0;
 document.addEventListener('mousemove', function() {
     // do nothing if last move was less than 40 ms ago
-
 });
+
 addEventListener('click', (event) => {
+const canvas = document.querySelector('canvas')
+const { top, left } = canvas.getBoundingClientRect()
+
   if(Date.now() - lastMove > 50) {
       lastMove = Date.now();
       if (players[socket.id]) {
@@ -12,8 +15,8 @@ addEventListener('click', (event) => {
           y: players[socket.id].y
         }
         const angle = Math.atan2(
-          event.clientY * window.devicePixelRatio - playerPosition.y,
-          event.clientX * window.devicePixelRatio - playerPosition.x
+          event.clientY - top - playerPosition.y,
+          event.clientX - left - playerPosition.x
         )
         // const velocity = {
         //   x: Math.cos(angle) * 5,

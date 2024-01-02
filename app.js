@@ -7,6 +7,8 @@ const io = new Server(server, { pingInterval: 2000, pingTimeout:5000 })
 const port = 3000
 const zksync = require('zksync-ethers')
 const ethers = require('ethers')
+const gameCanvasX = 1920
+const gameCanvasY = 1080
 // const provider = new ethers.providers.JsonRpcProvider();
 // const gas = provider.getGasPrice()
 // console.log(gas)
@@ -45,10 +47,10 @@ io.on('connection', (socket) => {
     }
   })
 
-  socket.on('initGame', ({width, height, devicePixelRatio, username, blockchainAccount}) => {
+  socket.on('initGame', ({width, height, username, blockchainAccount}) => {
     players[socket.id] = {
-      x: 700 * Math.random(),
-      y: 700 * Math.random(),
+      x: (gameCanvasX - 24) * Math.random(),
+      y: (gameCanvasY - 12) * Math.random(),
       model: 10 * Math.random(),
       sequenceNumber: 0,
       color: `hsl(${360*Math.random()}, 100%, 50%)`,
@@ -64,13 +66,12 @@ io.on('connection', (socket) => {
     }
     players[socket.id].canvas = {
       width,
-      height,
-      devicePixelRatio
+      height
     }
     players[socket.id].radius = radius
-    if (devicePixelRatio > 1) {
-      players[socket.id].radius = 2 * radius
-    }
+    // if (devicePixelRatio > 1) {
+    //   players[socket.id].radius = 2 * radius
+    // }
   })
 
   socket.on('disconnect', (reason) => {
@@ -91,25 +92,25 @@ io.on('connection', (socket) => {
         case 'keyW':
           players[socket.id].y -= speed
           if (players[socket.id].y <= 0) {
-            players[socket.id].y = 1080
+            players[socket.id].y = gameCanvasY
           }
           break;
         case 'keyA':
           players[socket.id].x -= speed
           if (players[socket.id].x <= 0) {
-            players[socket.id].x = 1920
+            players[socket.id].x = gameCanvasX
           }
           break;
         case 'keyS':
           players[socket.id].y += speed
           //bounds
-          if (players[socket.id].y >= 1080) {
+          if (players[socket.id].y >= gameCanvasY) {
             players[socket.id].y = 0
           }
           break;
         case 'keyD':
           players[socket.id].x += speed
-          if (players[socket.id].x >= 1920) {
+          if (players[socket.id].x >= gameCanvasX) {
             players[socket.id].x = 0
           }
           break;
@@ -128,11 +129,11 @@ setInterval(() => {
     if (
       playerProjectiles[id].x - projectileRadius >=
       // players[playerProjectiles[id].playerId]?.canvas?.width ||
-      2560 ||
+      gameCanvasX ||
       playerProjectiles[id].x - projectileRadius <= 0 ||
       playerProjectiles[id].y - projectileRadius >=
       // players[playerProjectiles[id].playerId]?.canvas?.height ||
-      1440 ||
+      gameCanvasY ||
       playerProjectiles[id].y - projectileRadius <= 0
     ) {
       delete playerProjectiles[id]
