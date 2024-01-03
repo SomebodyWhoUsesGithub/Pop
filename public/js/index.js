@@ -19,21 +19,21 @@ if (window.matchMedia("(orientation: landscape)").matches) {
 const x = canvas.width / 2
 const y = canvas.height / 2
 const playerImage = new Image()
-playerImage.src = "./img/5bg.png"
+playerImage.src = "./img/5c.png"
 const playerImageD = new Image()
-playerImageD.src = "./img/d5bg.png"
+playerImageD.src = "./img/d5c.png"
 const playerImageS = new Image()
-playerImageS.src = "./img/s5bg.png"
+playerImageS.src = "./img/s5c.png"
 const playerImageA = new Image()
-playerImageA.src = "./img/a5bg.png"
+playerImageA.src = "./img/a5c.png"
 const playerImageWD = new Image()
-playerImageWD.src = "./img/wd5bg.png"
+playerImageWD.src = "./img/wd5c.png"
 const playerImageWA = new Image()
-playerImageWA.src = "./img/wa5bg.png"
+playerImageWA.src = "./img/wa5c.png"
 const playerImageSD = new Image()
-playerImageSD.src = "./img/sd5bg.png"
+playerImageSD.src = "./img/sd5c.png"
 const playerImageSA = new Image()
-playerImageSA.src = "./img/sa5bg.png"
+playerImageSA.src = "./img/sa5c.png"
 const imageSama = new Image()
 imageSama.src = "./img/samaIco.png"
 // const player = new Player(x, y, 10, 'gold')
@@ -315,7 +315,7 @@ const keys={
     pressed: false
   }
 }
-const speed = 5
+const speed = 4
 const playerInputs = []
 let sequenceNumber = 0
 setInterval(() => {
