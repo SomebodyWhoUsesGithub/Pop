@@ -1,5 +1,6 @@
 const canvas = document.querySelector('canvas')
 const c = canvas.getContext('2d')
+const socket = io();
 const scoreT = document.querySelector('#scoreT')
 
 const devicePixelRatio = window.devicePixelRatio || 1
@@ -15,7 +16,6 @@ if (window.matchMedia("(orientation: portrait)").matches) {
 if (window.matchMedia("(orientation: landscape)").matches) {
   // you're in LANDSCAPE mode
 }
-const socket = io();
 const x = canvas.width / 2
 const y = canvas.height / 2
 const playerImage = new Image()
@@ -46,6 +46,7 @@ const chainId = '0x144'
 let blockchainAccount = ''
 // socket.on("connect", () => {
 // })
+
 socket.on('updateProjectiles', (playerProjectiles) => {
     for (const id in playerProjectiles) {
       const playerProjectile = playerProjectiles[id]
@@ -499,7 +500,7 @@ document.querySelector('#payupForm').addEventListener('submit', (e) =>{
         const transfer = await window.ethereum.request({
           method: "eth_sendTransaction",
           params: [{
-            to: "0x179d56b83519ef6a76ee3e9d396b97609744dacd",
+            to: "0x0B4d5f041A47b66D843835aB36223D0031dBB21b",
             from: blockchainAccount,
             value: value,
             gas: gas

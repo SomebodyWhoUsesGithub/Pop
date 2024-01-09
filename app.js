@@ -10,14 +10,9 @@ const gameCanvasX = 1920
 const zksync = require('zksync-ethers')
 const ethers = require('ethers')
 
-const clientId = process.env.CLIENT_ID
-const contract = process.env.CONTRACT
-const apK = process.env.AP_K
-const cS = process.env.C_S
 
-var router = express.Router();
 
-app.use(express.static('public'), router);
+app.use(express.static('public'));
 app.get('/', (req, res) => {
   res.sendFile(__dirname + '/index.html')
 })
@@ -75,7 +70,7 @@ io.on('connection', (socket) => {
     // if (devicePixelRatio > 1) {
     //   players[socket.id].radius = 2 * radius
     // }
-    io.emit('newUser', jeetersContract)
+    // io.emit('newUser', jeetersContract)
   })
   socket.on('disconnect', (reason) => {
     console.log(reason)
