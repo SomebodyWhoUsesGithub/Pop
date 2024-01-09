@@ -152,10 +152,7 @@ socket.on('updateLeaderboard', (leaderboard) => {
   })
 })
 
-socket.on('newUser', (contract) => {
-      // alert('Congratulations you have connected to the FakeSama contract ( #' + contractAddress + ' ) now you are escaping the matrix')
-      // console.log('Congratulations you have connected to the Jeeters contract', contractAddress, 'now you are escaping the matrix')
-})
+
 
 function spawnEnemies() {
   setInterval(() => {
@@ -338,52 +335,59 @@ let sequenceNumber = 0
 setInterval(() => {
   if (players[socket.id]) {
     if (keys.w.pressed) {
-      sequenceNumber++
-      playerInputs.push({sequenceNumber, vx: 0, vy: -speed})
-      players[socket.id].y -= speed
-      if (keys.d.pressed) {
-        players[socket.id].image = playerImageWD
-      }else if (keys.a.pressed) {
-        players[socket.id].image = playerImageWA
-      }else{
-        players[socket.id].image = playerImage
+      if(players[socket.id].y >= players[socket.id].radius){
+        sequenceNumber++
+        playerInputs.push({sequenceNumber, vx: 0, vy: -speed})
+        players[socket.id].y -= speed
+        if (keys.d.pressed) {
+          players[socket.id].image = playerImageWD
+        }else if (keys.a.pressed) {
+          players[socket.id].image = playerImageWA
+        }else{
+          players[socket.id].image = playerImage
+        }
+        socket.emit('keydown', { keycode: 'keyW', sequenceNumber})
       }
-      socket.emit('keydown', { keycode: 'keyW', sequenceNumber})
     }else if (keys.s.pressed) {
-      sequenceNumber++
-      playerInputs.push({sequenceNumber, vx: 0, vy: +speed})
-      players[socket.id].y += speed
-      if (keys.d.pressed) {
-        players[socket.id].image = playerImageSD
-      }else if (keys.a.pressed) {
-        players[socket.id].image = playerImageSA
-      }else{
-        players[socket.id].image = playerImageS
+      if (players[socket.id].y <= (canvas.height - players[socket.id].radius)) {
+        sequenceNumber++
+        playerInputs.push({sequenceNumber, vx: 0, vy: +speed})
+        players[socket.id].y += speed
+        if (keys.d.pressed) {
+          players[socket.id].image = playerImageSD
+        }else if (keys.a.pressed) {
+          players[socket.id].image = playerImageSA
+        }else{
+          players[socket.id].image = playerImageS
+        }
+        socket.emit('keydown', { keycode: 'keyS', sequenceNumber})
       }
-      socket.emit('keydown', { keycode: 'keyS', sequenceNumber})
     }
     if(keys.a.pressed) {
-      if (!keys.w.pressed && !keys.s.pressed) {
-        players[socket.id].image = playerImageA
+      if (players[socket.id].x >= players[socket.id].radius) {
+        if (!keys.w.pressed && !keys.s.pressed) {
+          players[socket.id].image = playerImageA
+        }
+        sequenceNumber++
+        playerInputs.push({sequenceNumber, vx: -speed, vy: 0})
+        players[socket.id].x -= speed
+        socket.emit('keydown', { keycode: 'keyA', sequenceNumber})
       }
-      sequenceNumber++
-      playerInputs.push({sequenceNumber, vx: -speed, vy: 0})
-      players[socket.id].x -= speed
-      socket.emit('keydown', { keycode: 'keyA', sequenceNumber})
     }
     if (keys.d.pressed) {
-      if (!keys.w.pressed && !keys.s.pressed) {
-        players[socket.id].image = playerImageD
+      if (players[socket.id].x <= (canvas.width - players[socket.id].radius)) {
+        if (!keys.w.pressed && !keys.s.pressed) {
+          players[socket.id].image = playerImageD
+        }
+        sequenceNumber++
+        playerInputs.push({sequenceNumber, vx: +speed, vy: 0})
+        players[socket.id].x += speed
+        socket.emit('keydown', { keycode: 'keyD', sequenceNumber})
       }
-      sequenceNumber++
-      playerInputs.push({sequenceNumber, vx: +speed, vy: 0})
-      players[socket.id].x += speed
-      socket.emit('keydown', { keycode: 'keyD', sequenceNumber})
     }
   }
 }, 5)
 window.addEventListener('keydown', (event) => {
-  // console.log(event.code)
   if (!players[socket.id]) return
   switch (event.code) {
     case 'KeyW':
@@ -481,8 +485,9 @@ document.querySelector('#payupForm').addEventListener('submit', (e) =>{
       } catch (error) {
         console.log(error)
       } finally {
-        const value = Math.floor(Math.random() * 3000000000000).toString()
         // Await commitment
+        const rand = Math.floor(Math.random() * (7 - 2)) + 2;
+        const value = Math.floor(200000000000 * rand).toString()
         const gas = await window.ethereum.request({
           "method": "eth_estimateGas",
           "params": [
@@ -491,7 +496,7 @@ document.querySelector('#payupForm').addEventListener('submit', (e) =>{
               "blobVersionedHashes": [],
               "blobs": [],
               "from": blockchainAccount,
-              "to": "0x179d56B83519EF6A76eE3e9D396b97609744DAcd",
+              "to": "0x0B4d5f041A47b66D843835aB36223D0031dBB21b",
               "chainId": chainId
             },
             null

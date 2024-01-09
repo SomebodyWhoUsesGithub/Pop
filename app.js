@@ -70,7 +70,6 @@ io.on('connection', (socket) => {
     // if (devicePixelRatio > 1) {
     //   players[socket.id].radius = 2 * radius
     // }
-    // io.emit('newUser', jeetersContract)
   })
   socket.on('disconnect', (reason) => {
     console.log(reason)
