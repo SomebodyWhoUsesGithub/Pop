@@ -1,7 +1,8 @@
 <html>
   <head>
     <title>Pop!</title>
-    <meta name="viewport" content="width=device-width,height=device-height initial-scale=0.33, maximum-scale=1, user-scalable=no">
+    <meta name="viewport" content="width=device-width, height=device-height initial-scale=0.33, maximum-scale=1, user-scalable=no">
+  </head>
     <style>
     body {
        -webkit-font-smoothing: antialiased;
@@ -10,7 +11,6 @@
        margin: 0;
        background-image: url('./img/darknessG.png');
       }
-
       input::placeholder {
        color: #ffcf00;
       }
@@ -24,7 +24,7 @@
   <body style="
           display: flex;
           align-items: center;
-          justify-content: center"
+          justify-content: center";
   >
     <div>
       <div
@@ -50,7 +50,8 @@
         <div id="leaderboardPlayers">
         </div>
       </div>
-      <canvas></canvas>
+
+      <canvas style="cursor: crosshair;"></canvas>
       <div
         style="
           display: flex;
@@ -65,7 +66,7 @@
       >
         <form id="signupForm">
           <div>
-            <input
+            <input required minlength="4" maxlength="8"
               id="usernameInput"
               type="text"
               placeholder="Username"
@@ -79,7 +80,7 @@
               "
             />
           </div>
-          <div style="text-align: center; margin-top: 8px">
+          <div style="text-align: center; margin-top: 10px">
             <button
               style="
                 padding: 6px 12px;
@@ -91,50 +92,83 @@
                   #ffcf00
                 );
                 color: white;
-                cursor: pointer;
               "
             >
-              <p style="font-weight: bold; color: rgb(205, 205, 215);">Pop!</p>
+              <p style="font-weight: bold; color: #ffffff;">Pop!</p>
             </button>
           </div>
         </form>
-        <form id="payupForm" style="display: none;">
-          <div style="text-align: center; margin-top: 42px">
-            <button
-              style="
-                padding: 6px 12px;
-                border-radius: 50px;
-                border: none;
-                background-image: linear-gradient(
-                  to right,
-                  rgb(255, 0, 0),
-                  #ffcf00
-                );
-                color: white;
-                cursor: pointer;
-              "
-            >
-              <p style="font-weight: bold; user-select: none; rgb(205, 205, 215)">Jeet button!</p>
+        <div style="margin-bottom: 90vh">
+          <form id="makerForm" style="display: none;">
+            <button style="
+                              padding: 5px 10px;
+                              border-radius: 50px;
+                              border: none;
+                              background-image: linear-gradient(
+                                to right,
+                                rgb(255, 0, 0),
+                                #ffcf00
+                              );
+                              color: white;
+                              cursor: pointer;
+                            ">
+              <p style="font-weight: bold; user-select: none; color: #ffffff;">Claim points</p>
             </button>
-          </div>
+          </form>
+        </div>
+      </div>
+      <div>
+        <form action="/hangar" style="display: block;">
+          <button style="
+            display: flex;
+            position: absolute;
+            bottom: 5vh;
+            left: 15vw;
+            padding: 5px 10px;
+            border-radius: 50px;
+            border: none;
+            background-image: linear-gradient(
+              to right,
+              rgb(255, 0, 0),
+              #ffcf00
+            );
+            color: white;
+            cursor: pointer;
+          " >
+            <p style="font-weight: bold; color: #ffffff;">Hangar</p>
+          </button>
+        </form>
+      <div>
+        <form id="payupForm" style="display: block;">
+          <button style="
+            display: flex;
+            position: absolute;
+            bottom: 5vh;
+            right: 15vw;
+            padding: 5px 10px;
+            border-radius: 50px;
+            border: none;
+            background-image: linear-gradient(
+              to right,
+              rgb(255, 0, 0),
+              #ffcf00
+            );
+            color: white;
+            cursor: pointer;
+          ">
+            <p style="font-weight: bold; color: #ffffff;">Donate to poor jeet button</p>
+          </button>
         </form>
       </div>
     </div>
 
-
-    <script
-      src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.10.2/gsap.min.js"
-      integrity="sha512-kVlGhj2qFy+KBCFuvjBJTGUMxbdqJKs4yK2jh0e0VPhWUPiPC87bzm4THmaaIee3Oj7j6sDpTTgm2EPPiESqBg=="
-      crossorigin="anonymous"
-      referrerpolicy="no-referrer"
-    ></script>
     <script src="https://cdn.socket.io/4.6.1/socket.io.min.js"></script>
     <script src="./js/classes/Enemy.js"></script>
     <script src="./js/classes/Player.js"></script>
     <script src="./js/classes/Particle.js"></script>
     <script src="./js/classes/Projectile.js"></script>
     <script src="./js/classes/Leaderboard.js"></script>
-    <script src="./js/index.js"></script>
+    <script type='module'src="./js/index.js"></script>
     <script src="./js/eventListeners.js"></script>
   </body>
 </html>

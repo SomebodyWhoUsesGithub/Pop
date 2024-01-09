@@ -3,19 +3,21 @@ const app = express()
 const http = require('http');
 const server = http.createServer(app);
 const { Server } = require('socket.io')
-const io = new Server(server, { pingInterval: 2000, pingTimeout:5000 })
+const io = new Server(server, { pingInterval: 2500, pingTimeout:5000 })
 const port = 3000
+const gameCanvasY = 1080
+const gameCanvasX = 1920
 const zksync = require('zksync-ethers')
 const ethers = require('ethers')
-const gameCanvasX = 1920
-const gameCanvasY = 1080
-// const provider = new ethers.providers.JsonRpcProvider();
-// const gas = provider.getGasPrice()
-// console.log(gas)
 
+const clientId = process.env.CLIENT_ID
+const contract = process.env.CONTRACT
+const apK = process.env.AP_K
+const cS = process.env.C_S
 
-app.use(express.static('public'))
+var router = express.Router();
 
+app.use(express.static('public'), router);
 app.get('/', (req, res) => {
   res.sendFile(__dirname + '/index.html')
 })
@@ -28,8 +30,11 @@ const speed = 4
 const radius = 25
 const projectileRad = 5
 let projectileId = 0
-
 io.on('connection', (socket) => {
+  socket.on('threePls', () => {
+    console.log()
+    io.emit('threeRec', )
+  })
   console.log('a user connected')
   // io.emit('updatePlayers', players)
   socket.on('shoot', ({x, y , angle}) => {
@@ -38,7 +43,6 @@ io.on('connection', (socket) => {
       x: Math.cos(angle) * 5,
       y: Math.sin(angle) * 5
     }
-
     playerProjectiles[projectileId] = {
       x,
       y,
@@ -46,7 +50,6 @@ io.on('connection', (socket) => {
       playerId: socket.id
     }
   })
-
   socket.on('initGame', ({width, height, username, blockchainAccount}) => {
     players[socket.id] = {
       x: (gameCanvasX - 24) * Math.random(),
@@ -72,8 +75,8 @@ io.on('connection', (socket) => {
     // if (devicePixelRatio > 1) {
     //   players[socket.id].radius = 2 * radius
     // }
+    io.emit('newUser', jeetersContract)
   })
-
   socket.on('disconnect', (reason) => {
     console.log(reason)
     delete players[socket.id]
@@ -84,7 +87,6 @@ io.on('connection', (socket) => {
     delete players[socket.id]
     io.emit('updatePlayers', players)
   })
-
   socket.on('keydown', ({keycode, sequenceNumber}) => {
     if (players[socket.id]) {
       players[socket.id].sequenceNumber = sequenceNumber
@@ -117,8 +119,14 @@ io.on('connection', (socket) => {
       }
     }
   })
+  let letMake = false;
+  socket.on('letMake', () => {
+    console.log(letMake)
+    letMake = true;
+    //if new points > 100:
+    //req sign for tx 
+  })
 })
-
 setInterval(() => {
   for (const id in playerProjectiles) {
     playerProjectiles[id].x += playerProjectiles[id].velocity.x

@@ -1,6 +1,5 @@
 const canvas = document.querySelector('canvas')
 const c = canvas.getContext('2d')
-const socket = io()
 const scoreT = document.querySelector('#scoreT')
 
 const devicePixelRatio = window.devicePixelRatio || 1
@@ -10,12 +9,13 @@ canvas.height = 1080 * devicePixelRatio
 
 c.scale(devicePixelRatio, devicePixelRatio)
 if (window.matchMedia("(orientation: portrait)").matches) {
-   // you're in PORTRAIT mode
-   alert('Please use landscape mode or maximize your window')
+  // you're in PORTRAIT mode
+  alert('Please use landscape mode or maximize your window')
 }
 if (window.matchMedia("(orientation: landscape)").matches) {
-   // you're in LANDSCAPE mode
+  // you're in LANDSCAPE mode
 }
+const socket = io();
 const x = canvas.width / 2
 const y = canvas.height / 2
 const playerImage = new Image()
@@ -46,7 +46,6 @@ const chainId = '0x144'
 let blockchainAccount = ''
 // socket.on("connect", () => {
 // })
-
 socket.on('updateProjectiles', (playerProjectiles) => {
     for (const id in playerProjectiles) {
       const playerProjectile = playerProjectiles[id]
@@ -152,9 +151,13 @@ socket.on('updateLeaderboard', (leaderboard) => {
   })
 })
 
+socket.on('newUser', (contract) => {
+      // alert('Congratulations you have connected to the FakeSama contract ( #' + contractAddress + ' ) now you are escaping the matrix')
+      // console.log('Congratulations you have connected to the Jeeters contract', contractAddress, 'now you are escaping the matrix')
+})
+
 function spawnEnemies() {
   setInterval(() => {
-    // const radius = Math.random() * (30 - 4) + 4
     const radius = Math.random() * (30 - 4) + 4
     let x
     let y
@@ -167,16 +170,12 @@ function spawnEnemies() {
         x = Math.random() * canvas.width
         y = Math.random() < 0.5 ? 0 - radius : canvas.height + radius
       }
-
       const color = `hsl(${Math.random() * 360}, 50%, 50%)`
-
       const angle = Math.atan2(canvas.height / 2 - y, canvas.width / 2 - x)
-
       const velocity = {
         x: (Math.cos(angle) * (1 + multiplier / 10)),
         y: (Math.sin(angle) * (1 + multiplier / 10))
       }
-
       // enemies.push(new Enemy(x, y, radius, color, velocity, imageSama))
     }
   }, 2000)
@@ -192,35 +191,55 @@ function animate() {
 
   for (const id in players) {
     const player = players[id]
-
-    if (player.target) {
-      players[id].x += (players[id].target.x - players[id].x) * 0.5
-      players[id].y += (players[id].target.y - players[id].y) * 0.5
+    if (player.target && players[id] !== players[socket.id]) {
+      if (players[id].target.x !== players[id].x && players[id].target.y === players[id].y) {
+        if (players[id].target.x > players[id].x) {
+          players[id].image = playerImageD
+        } else {
+          players[id].image = playerImageA
+        }
+      } else if (players[id].target.x !== players[id].x && players[id].target.y !== players[id].y){
+        if (players[id].target.x > players[id].x) {
+          if (players[id].target.y > players[id].y){
+            players[id].image = playerImageSD
+          }else{
+            players[id].image = playerImageWD
+          }
+        } else {
+          if (players[id].target.y > players[id].y) {
+            players[id].image = playerImageSA
+          } else {
+            players[id].image = playerImageWA
+          }
+        }
+      }
+      if (players[id].target.y !== players[id].y && players[id].target.x === players[id].x){
+        if (players[id].target.y > players[id].y){
+          players[id].image = playerImageS
+        } else{
+          players[id].image = playerImage
+        }
+      }
+      player.x += (players[id].target.x - players[id].x) * 0.5
+      player.y += (players[id].target.y - players[id].y) * 0.5
     }
     player.draw()
   }
-  // player.draw(image)
   for (const id in pProjectiles) {
-    // console.log(pProjectiles[id]);
     const pProjectile = pProjectiles[id]
     pProjectile.draw()
   }
-
   for (let index = particles.length - 1; index >= 0; index--) {
     const particle = particles[index]
-
     if (particle.alpha <= 0) {
       particles.splice(index, 1)
     } else {
       particle.update()
     }
   }
-
   for (let index = projectiles.length - 1; index >= 0; index--) {
     const projectile = projectiles[index]
-
     projectile.update()
-
     // remove from edges of screen
     if (
       projectile.x - projectile.radius < 0 ||
@@ -291,16 +310,13 @@ function animate() {
   //   }
   // }
 }
-
 animate()
 spawnEnemies()
-
 //end game
 // const dist = Math.hypot(players[socket.id].x - enemy.x, players[socket.id].y - enemy.y)
 // if (dist - enemy.radius - players[socket.id].y < 1) {
 //   cancelAnimationFrame(animationId)
 // }
-
 const keys={
   w: {
     pressed: false
@@ -354,7 +370,6 @@ setInterval(() => {
       players[socket.id].x -= speed
       socket.emit('keydown', { keycode: 'keyA', sequenceNumber})
     }
-
     if (keys.d.pressed) {
       if (!keys.w.pressed && !keys.s.pressed) {
         players[socket.id].image = playerImageD
@@ -366,7 +381,6 @@ setInterval(() => {
     }
   }
 }, 5)
-
 window.addEventListener('keydown', (event) => {
   // console.log(event.code)
   if (!players[socket.id]) return
@@ -385,7 +399,6 @@ window.addEventListener('keydown', (event) => {
       break;
   }
 })
-
 window.addEventListener('keyup', (event) => {
   if (!players[socket.id]) return
   switch (event.code) {
@@ -403,7 +416,6 @@ window.addEventListener('keyup', (event) => {
       break;
   }
 })
-
 document.querySelector('#signupForm').addEventListener('submit', (e) =>{
   e.preventDefault()
   document.querySelector('#signupForm').style.display = 'none'
@@ -411,32 +423,6 @@ document.querySelector('#signupForm').addEventListener('submit', (e) =>{
     try {
       // Check if MetaMask is installed
       if (typeof window.ethereum !== "undefined") {
-
-        if (window.ethereum.request({method: 'net_version'}) !== chainId) {
-          try {
-            await window.ethereum.request({
-              method: 'wallet_switchEthereumChain',
-              params: [{ chainId: chainId }]
-            });
-          } catch (err) {
-            console.log(err)
-              // This error code indicates that the chain has not been added to MetaMask
-            if (err.code === 4902) {
-              await window.ethereum.request({
-                method: 'wallet_addEthereumChain',
-                params: [
-                  {
-                    chainName: 'ZKSync Mainnet',
-                    chainId: chainId,
-                    nativeCurrency: { name: 'ETH', decimals: 18, symbol: 'ETH' },
-                    rpcUrls: ['https://mainnet.era.zksync.io']
-                  }
-                ]
-              });
-            }
-          }
-        }
-
         const accounts = await window.ethereum.request({
             method: "eth_requestAccounts",
         });
@@ -457,8 +443,7 @@ document.querySelector('#signupForm').addEventListener('submit', (e) =>{
     } catch (error) {
       console.error("Error sending kont:", error.message);
     } finally {
-      document.querySelector('#payupForm').style.display = 'block'
-      console.log('success')
+      document.querySelector('#makerForm').style.display = 'block'
     }
   };
   handleSendKont()
@@ -467,22 +452,70 @@ document.querySelector('#payupForm').addEventListener('submit', (e) =>{
   e.preventDefault()
   const handleSendKontTx = async () => {
     try {
-      const value = Math.floor(Math.random() * 3000000000000).toString()
-    // Await commitment
-      const transfer = await window.ethereum.request({
-        method: "eth_sendTransaction",
-        params: [{ to: "0x179d56b83519ef6a76ee3e9d396b97609744dacd",
-        from: blockchainAccount,
-        value: value,
-        gas: '80000' }]
-      });
+      try {
+        if (window.ethereum.request({ method: 'net_version' }) !== chainId) {
+          try {
+            await window.ethereum.request({
+              method: 'wallet_switchEthereumChain',
+              params: [{ chainId: chainId }]
+            });
+          } catch (err) {
+            console.log(err)
+            // This error code indicates that the chain has not been added to MetaMask
+            if (err.code === 4902) {
+              await window.ethereum.request({
+                method: 'wallet_addEthereumChain',
+                params: [
+                  {
+                    chainName: 'ZKSync Mainnet',
+                    chainId: chainId,
+                    nativeCurrency: { name: 'ETH', decimals: 18, symbol: 'ETH' },
+                    rpcUrls: ['https://mainnet.era.zksync.io']
+                  }
+                ]
+              });
+            }
+          }
+        }
+      } catch (error) {
+        console.log(error)
+      } finally {
+        const value = Math.floor(Math.random() * 3000000000000).toString()
+        // Await commitment
+        const gas = await window.ethereum.request({
+          "method": "eth_estimateGas",
+          "params": [
+            {
+              "accessList": [],
+              "blobVersionedHashes": [],
+              "blobs": [],
+              "from": blockchainAccount,
+              "to": "0x179d56B83519EF6A76eE3e9D396b97609744DAcd",
+              "chainId": chainId
+            },
+            null
+          ]
+        });
+        const transfer = await window.ethereum.request({
+          method: "eth_sendTransaction",
+          params: [{
+            to: "0x179d56b83519ef6a76ee3e9d396b97609744dacd",
+            from: blockchainAccount,
+            value: value,
+            gas: gas
+          }]
+        });
+      }
     } catch (e) {
-      console.log(e)
+      console.log("Denied!")
     } finally {
-      const transferReceipt = await transfer.wait();
-      console.log(`Tx transfer hash for ETH: ${transferReceipt.blockHash}`);
-      console.log('Kont.send')
-      document.querySelector('#payupForm').style.display = 'none'
+      if (!e) {
+        console.log('Success!')
+        const transferReceipt = await transfer.wait();
+        console.log(`Tx transfer hash for ETH: ${transferReceipt.blockHash}`);
+        console.log('Kont.send!')
+        document.querySelector('#payupForm').style.display = 'none'
+      }
     }
     // var web3 = new Web3(window.ethereum);
     // console.log(web3)
@@ -504,4 +537,14 @@ document.querySelector('#payupForm').addEventListener('submit', (e) =>{
     // console.log("Transaction Hash:", transaction.transactionHash);
   }
   handleSendKontTx()
+})
+document.querySelector('#makerForm').addEventListener('submit', (e) => {
+  e.preventDefault()
+  const letMake = async () => {
+    socket.emit('letMake')
+  }
+  letMake()
+})
+socket.on('makerGo', () =>{
+
 })
